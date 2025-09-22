@@ -7,6 +7,7 @@ import 'package:omi/providers/device_provider.dart';
 import 'package:omi/providers/home_provider.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/other/temp.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:provider/provider.dart';
 
 class BatteryInfoWidget extends StatelessWidget {
@@ -45,9 +46,9 @@ class BatteryInfoWidget extends StatelessWidget {
                 child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1F1F25),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                        color: Color.fromRGBO(186, 236, 243, 0.5),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(width: 1, color: Colors.white)),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,7 +94,7 @@ class BatteryInfoWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1F1F25),
+                    color: Colors.red,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Row(
@@ -141,21 +142,21 @@ class BatteryInfoWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1F1F25),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                      color: Color.fromRGBO(186, 236, 243, 0.5),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(width: 1, color: Colors.white)),
                   child: Row(
                     children: [
-                      Image.asset(
-                        Assets.images.logoTransparent.path,
-                        width: MediaQuery.sizeOf(context).width * 0.05,
-                        height: MediaQuery.sizeOf(context).width * 0.05,
+                      Icon(
+                        Icons.fiber_smart_record_outlined,
+                        color: Colors.green,
+                        size: MediaQuery.sizeOf(context).width * 0.05,
                       ),
                       isMemoriesPage ? const SizedBox(width: 8) : const SizedBox.shrink(),
                       deviceProvider.isConnecting && isMemoriesPage
                           ? Text(
                               "Searching",
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: TayaColors.secondaryTextColor),
                             )
                           : isMemoriesPage
                               ? Text(

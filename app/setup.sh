@@ -55,6 +55,7 @@ echo ""
 
 
 API_BASE_URL=https://api.omiapi.com/
+echo "reach the link https://api.omiapi.com/"
 
 ######################################
 # Setup Firebase with prebuilt configs
@@ -122,9 +123,9 @@ function setup_provisioning_profile() {
         brew install fastlane
     fi
     
-    MATCH_PASSWORD=omi fastlane match development --readonly \
-        --app_identifier com.friend-app-with-wearable.ios12.development \
-        --git_url "git@github.com:BasedHardware/omi-community-certs.git"
+    # MATCH_PASSWORD=omi fastlane match development --readonly \
+    #     --app_identifier com.friend-app-with-wearable.ios12.development \
+    #     --git_url "git@github.com:BasedHardware/omi-community-certs.git"
 }
 
 ######################################
@@ -137,10 +138,10 @@ function setup_provisioning_profile_macos() {
         brew install fastlane
     fi
     
-    MATCH_PASSWORD=omi fastlane match development --readonly \
-        --platform macos \
-        --app_identifier com.friend-app-with-wearable.ios12.development \
-        --git_url "git@github.com:BasedHardware/omi-community-certs.git"
+    # MATCH_PASSWORD=omi fastlane match development --readonly \
+    #     --platform macos \
+    #     --app_identifier com.friend-app-with-wearable.ios12.development \
+    #     --git_url "git@github.com:BasedHardware/omi-community-certs.git"
 }
 
 

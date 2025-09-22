@@ -16,6 +16,7 @@ import 'package:omi/pages/apps/app_detail/app_detail.dart';
 import 'package:omi/pages/apps/page.dart';
 import 'package:omi/pages/chat/page.dart';
 import 'package:omi/pages/conversations/conversations_page.dart';
+import 'package:omi/pages/home/widgets/custom_bottom_bar_widget.dart';
 import 'package:omi/pages/memories/page.dart';
 import 'package:omi/pages/settings/data_privacy_page.dart';
 import 'package:omi/pages/settings/settings_drawer.dart';
@@ -31,6 +32,7 @@ import 'package:omi/utils/analytics/analytics_manager.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/audio/foreground.dart';
 import 'package:omi/utils/platform/platform_service.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:omi/widgets/upgrade_alert.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -357,7 +359,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                         'No internet connection. Please check your connection.',
                         style: TextStyle(color: Colors.white70),
                       ),
-                      backgroundColor: const Color(0xFF424242), // Dark gray instead of red
+                      backgroundColor: Colors.red, // Dark gray instead of red
                       leading: const Icon(Icons.wifi_off, color: Colors.white70),
                       actions: [
                         TextButton(
@@ -457,196 +459,203 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                             // Check if OMI device is connected
                             bool isOmiDeviceConnected =
                                 deviceProvider.isConnected && deviceProvider.connectedDevice != null;
+                            return Align(
+                                alignment: Alignment.bottomCenter,
+                                child: CustomBottomNavBar(
+                                  selectedIndex: home.selectedIndex,
+                                  onItemTapped: (val) => home.setIndex(val),
+                                ));
 
-                            return Stack(
-                              children: [
-                                // Bottom Navigation Bar
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 90,
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                                    decoration: const BoxDecoration(
-                                      color: Color.fromARGB(255, 15, 15, 15),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        // Home tab
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              HapticFeedback.mediumImpact();
-                                              MixpanelManager().bottomNavigationTabClicked('Home');
-                                              primaryFocus?.unfocus();
-                                              if (home.selectedIndex == 0) {
-                                                _scrollToTop(0);
-                                                return;
-                                              }
-                                              home.setIndex(0);
-                                            },
-                                            child: SizedBox(
-                                              height: 90,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 15),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      FontAwesomeIcons.house,
-                                                      color: home.selectedIndex == 0 ? Colors.white : Colors.grey,
-                                                      size: 24,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        // Action Items tab
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              HapticFeedback.mediumImpact();
-                                              MixpanelManager().bottomNavigationTabClicked('Action Items');
-                                              primaryFocus?.unfocus();
-                                              if (home.selectedIndex == 1) {
-                                                _scrollToTop(1);
-                                                return;
-                                              }
-                                              home.setIndex(1);
-                                            },
-                                            child: SizedBox(
-                                              height: 90,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 15),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      FontAwesomeIcons.listCheck,
-                                                      color: home.selectedIndex == 1 ? Colors.white : Colors.grey,
-                                                      size: 24,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        // Center space for record button - only when no OMI device is connected
-                                        if (!isOmiDeviceConnected) const SizedBox(width: 80),
-                                        // Memories tab
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              HapticFeedback.mediumImpact();
-                                              MixpanelManager().bottomNavigationTabClicked('Memories');
-                                              primaryFocus?.unfocus();
-                                              if (home.selectedIndex == 2) {
-                                                _scrollToTop(2);
-                                                return;
-                                              }
-                                              home.setIndex(2);
-                                            },
-                                            child: SizedBox(
-                                              height: 90,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 15),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      FontAwesomeIcons.brain,
-                                                      color: home.selectedIndex == 2 ? Colors.white : Colors.grey,
-                                                      size: 24,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        // Apps tab
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              HapticFeedback.mediumImpact();
-                                              MixpanelManager().bottomNavigationTabClicked('Apps');
-                                              primaryFocus?.unfocus();
-                                              if (home.selectedIndex == 3) {
-                                                _scrollToTop(3);
-                                                return;
-                                              }
-                                              home.setIndex(3);
-                                            },
-                                            child: SizedBox(
-                                              height: 90,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(bottom: 15),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      FontAwesomeIcons.puzzlePiece,
-                                                      color: home.selectedIndex == 3 ? Colors.white : Colors.grey,
-                                                      size: 24,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                // Central Record Button - Only show when no OMI device is connected
-                                if (!isOmiDeviceConnected)
-                                  Positioned(
-                                    left: MediaQuery.of(context).size.width / 2 - 40,
-                                    bottom: 40, // Position it to protrude above the taller navbar (90px height)
-                                    child: Consumer<CaptureProvider>(
-                                      builder: (context, captureProvider, child) {
-                                        bool isRecording = captureProvider.recordingState == RecordingState.record;
-                                        bool isInitializing =
-                                            captureProvider.recordingState == RecordingState.initialising;
-                                        return GestureDetector(
-                                          onTap: () async {
-                                            HapticFeedback.heavyImpact();
-                                            if (isInitializing) return;
-                                            await _handleRecordButtonPress(context, captureProvider);
-                                          },
-                                          child: Container(
-                                            width: 80,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: isRecording ? Colors.red : Colors.deepPurple,
-                                              border: Border.all(
-                                                color: Colors.black,
-                                                width: 5,
-                                              ),
-                                            ),
-                                            child: isInitializing
-                                                ? const CircularProgressIndicator(
-                                                    color: Colors.white,
-                                                    strokeWidth: 2,
-                                                  )
-                                                : Icon(
-                                                    isRecording ? FontAwesomeIcons.stop : FontAwesomeIcons.microphone,
-                                                    color: Colors.white,
-                                                    size: 24,
-                                                  ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                // Remove the floating chat button - moving it to app bar
-                              ],
-                            );
+                            // return Stack(
+                            //   children: [
+                            //     // Bottom Navigation Bar
+                            //     Align(
+                            //       alignment: Alignment.bottomCenter,
+                            //       child: Container(
+                            //         width: double.infinity,
+                            //         height: 90,
+                            //         padding: const EdgeInsets.symmetric(horizontal: 20),
+                            //         decoration: const BoxDecoration(
+                            //           color: Color.fromARGB(255, 15, 15, 15),
+                            //         ),
+                            //         child: Row(
+                            //           children: [
+                            //             // Home tab
+                            //             Expanded(
+                            //               child: InkWell(
+                            //                 onTap: () {
+                            //                   HapticFeedback.mediumImpact();
+                            //                   MixpanelManager().bottomNavigationTabClicked('Home');
+                            //                   primaryFocus?.unfocus();
+                            //                   if (home.selectedIndex == 0) {
+                            //                     _scrollToTop(0);
+                            //                     return;
+                            //                   }
+                            //                   home.setIndex(0);
+                            //                 },
+                            //                 child: SizedBox(
+                            //                   height: 90,
+                            //                   child: Padding(
+                            //                     padding: const EdgeInsets.only(bottom: 15),
+                            //                     child: Column(
+                            //                       mainAxisAlignment: MainAxisAlignment.center,
+                            //                       children: [
+                            //                         Icon(
+                            //                           FontAwesomeIcons.locationArrow,
+                            //                           color: home.selectedIndex == 0 ? Colors.white : Colors.grey,
+                            //                           size: 24,
+                            //                         ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             // Action Items tab
+                            //             Expanded(
+                            //               child: InkWell(
+                            //                 onTap: () {
+                            //                   HapticFeedback.mediumImpact();
+                            //                   MixpanelManager().bottomNavigationTabClicked('Action Items');
+                            //                   primaryFocus?.unfocus();
+                            //                   if (home.selectedIndex == 1) {
+                            //                     _scrollToTop(1);
+                            //                     return;
+                            //                   }
+                            //                   home.setIndex(1);
+                            //                 },
+                            //                 child: SizedBox(
+                            //                   height: 90,
+                            //                   child: Padding(
+                            //                     padding: const EdgeInsets.only(bottom: 15),
+                            //                     child: Column(
+                            //                       mainAxisAlignment: MainAxisAlignment.center,
+                            //                       children: [
+                            //                         Icon(
+                            //                           FontAwesomeIcons.listCheck,
+                            //                           color: home.selectedIndex == 1 ? Colors.white : Colors.grey,
+                            //                           size: 24,
+                            //                         ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             // Center space for record button - only when no OMI device is connected
+                            //             if (!isOmiDeviceConnected) const SizedBox(width: 80),
+                            //             // Memories tab
+                            //             Expanded(
+                            //               child: InkWell(
+                            //                 onTap: () {
+                            //                   HapticFeedback.mediumImpact();
+                            //                   MixpanelManager().bottomNavigationTabClicked('Memories');
+                            //                   primaryFocus?.unfocus();
+                            //                   if (home.selectedIndex == 2) {
+                            //                     _scrollToTop(2);
+                            //                     return;
+                            //                   }
+                            //                   home.setIndex(2);
+                            //                 },
+                            //                 child: SizedBox(
+                            //                   height: 90,
+                            //                   child: Padding(
+                            //                     padding: const EdgeInsets.only(bottom: 15),
+                            //                     child: Column(
+                            //                       mainAxisAlignment: MainAxisAlignment.center,
+                            //                       children: [
+                            //                         Icon(
+                            //                           FontAwesomeIcons.brain,
+                            //                           color: home.selectedIndex == 2 ? Colors.white : Colors.grey,
+                            //                           size: 24,
+                            //                         ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             // Apps tab
+                            //             Expanded(
+                            //               child: InkWell(
+                            //                 onTap: () {
+                            //                   HapticFeedback.mediumImpact();
+                            //                   MixpanelManager().bottomNavigationTabClicked('Apps');
+                            //                   primaryFocus?.unfocus();
+                            //                   if (home.selectedIndex == 3) {
+                            //                     _scrollToTop(3);
+                            //                     return;
+                            //                   }
+                            //                   home.setIndex(3);
+                            //                 },
+                            //                 child: SizedBox(
+                            //                   height: 90,
+                            //                   child: Padding(
+                            //                     padding: const EdgeInsets.only(bottom: 15),
+                            //                     child: Column(
+                            //                       mainAxisAlignment: MainAxisAlignment.center,
+                            //                       children: [
+                            //                         Icon(
+                            //                           FontAwesomeIcons.puzzlePiece,
+                            //                           color: home.selectedIndex == 3 ? Colors.white : Colors.grey,
+                            //                           size: 24,
+                            //                         ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     // Central Record Button - Only show when no OMI device is connected
+                            //     if (!isOmiDeviceConnected)
+                            //       Positioned(
+                            //         left: MediaQuery.of(context).size.width / 2 - 40,
+                            //         bottom: 40, // Position it to protrude above the taller navbar (90px height)
+                            //         child: Consumer<CaptureProvider>(
+                            //           builder: (context, captureProvider, child) {
+                            //             bool isRecording = captureProvider.recordingState == RecordingState.record;
+                            //             bool isInitializing =
+                            //                 captureProvider.recordingState == RecordingState.initialising;
+                            //             return GestureDetector(
+                            //               onTap: () async {
+                            //                 HapticFeedback.heavyImpact();
+                            //                 if (isInitializing) return;
+                            //                 await _handleRecordButtonPress(context, captureProvider);
+                            //               },
+                            //               child: Container(
+                            //                 width: 80,
+                            //                 height: 80,
+                            //                 decoration: BoxDecoration(
+                            //                   shape: BoxShape.circle,
+                            //                   color: isRecording ? Colors.red : Colors.deepPurple,
+                            //                   border: Border.all(
+                            //                     color: Colors.black,
+                            //                     width: 5,
+                            //                   ),
+                            //                 ),
+                            //                 child: isInitializing
+                            //                     ? const CircularProgressIndicator(
+                            //                         color: Colors.white,
+                            //                         strokeWidth: 2,
+                            //                       )
+                            //                     : Icon(
+                            //                         isRecording ? FontAwesomeIcons.stop : FontAwesomeIcons.microphone,
+                            //                         color: Colors.white,
+                            //                         size: 24,
+                            //                       ),
+                            //               ),
+                            //             );
+                            //           },
+                            //         ),
+                            //       ),
+                            //     // Remove the floating chat button - moving it to app bar
+                            //   ],
+                            // );
+                          
                           }
                         },
                       ),
@@ -695,11 +704,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: const Color.fromRGBO(77, 161, 181, 1),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          
           const BatteryInfoWidget(),
           const SizedBox.shrink(),
           Row(
@@ -707,104 +717,130 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
               Container(
                 width: 36,
                 height: 36,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1F1F25),
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(
+                    color: const Color.fromRGBO(186, 236, 243, 0.5),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.white,
+                    )),
                 child: IconButton(
+                  color: Colors.red,
                   padding: EdgeInsets.zero,
-                  icon: const Icon(
-                    FontAwesomeIcons.gear,
+                  icon: Icon(
+                    FontAwesomeIcons.magnifyingGlass,
                     size: 16,
-                    color: Colors.white70,
+                    color: TayaColors.secondaryTextColor,
                   ),
                   onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    MixpanelManager().pageOpened('Settings');
-                    String language = SharedPreferencesUtil().userPrimaryLanguage;
-                    bool hasSpeech = SharedPreferencesUtil().hasSpeakerProfile;
-                    String transcriptModel = SharedPreferencesUtil().transcriptionModel;
-                    SettingsDrawer.show(context);
-                    if (language != SharedPreferencesUtil().userPrimaryLanguage ||
-                        hasSpeech != SharedPreferencesUtil().hasSpeakerProfile ||
-                        transcriptModel != SharedPreferencesUtil().transcriptionModel) {
-                      if (context.mounted) {
-                        context.read<CaptureProvider>().onRecordProfileSettingChanged();
-                      }
-                    }
+                    ///TODO add Logic for search
+                    ///
+
+                    // HapticFeedback.mediumImpact();
+                    // MixpanelManager().pageOpened('Settings');
+                    // String language = SharedPreferencesUtil().userPrimaryLanguage;
+                    // bool hasSpeech = SharedPreferencesUtil().hasSpeakerProfile;
+                    // String transcriptModel = SharedPreferencesUtil().transcriptionModel;
+                    // SettingsDrawer.show(context);
+                    // if (language != SharedPreferencesUtil().userPrimaryLanguage ||
+                    //     hasSpeech != SharedPreferencesUtil().hasSpeakerProfile ||
+                    //     transcriptModel != SharedPreferencesUtil().transcriptionModel) {
+                    //   if (context.mounted) {
+                    //     context.read<CaptureProvider>().onRecordProfileSettingChanged();
+                    //   }
+                    // }
                   },
                 ),
               ),
+
+              /// replaced this with user image avatar image
+              ///
+              ///
               // Chat Button - Only show on home page (index 0)
-              Consumer<HomeProvider>(
-                builder: (context, provider, child) {
-                  if (provider.selectedIndex == 0) {
-                    return GestureDetector(
-                      onTap: () {
-                        HapticFeedback.mediumImpact();
-                        MixpanelManager().bottomNavigationTabClicked('Chat');
-                        // Navigate to chat page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ChatPage(isPivotBottom: false),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 36,
-                        margin: const EdgeInsets.only(left: 8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.deepPurpleAccent.withValues(alpha: 0.3),
-                              Colors.purpleAccent.withValues(alpha: 0.2),
-                              Colors.deepPurpleAccent.withValues(alpha: 0.3),
-                              Colors.purpleAccent.withValues(alpha: 0.2),
-                              Colors.deepPurpleAccent.withValues(alpha: 0.3),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.all(0.5),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurpleAccent.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(17.5),
-                            border: Border.all(
-                              color: Colors.pink.withValues(alpha: 0.3),
-                              width: 0.5,
-                            ),
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                FontAwesomeIcons.solidComment,
-                                size: 14,
-                                color: Colors.white70,
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                'Ask',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
+              // Consumer<HomeProvider>(
+              //   builder: (context, provider, child) {
+              //     if (provider.selectedIndex == 0) {
+              //       return GestureDetector(
+              //         onTap: () {
+              //           HapticFeedback.mediumImpact();
+              //           MixpanelManager().bottomNavigationTabClicked('Chat');
+              //           // Navigate to chat page
+              //           Navigator.push(
+              //             context,
+              //             MaterialPageRoute(
+              //               builder: (context) => const ChatPage(isPivotBottom: false),
+              //             ),
+              //           );
+              //         },
+              //         child: Container(
+              //           height: 36,
+              //           margin: const EdgeInsets.only(left: 8),
+              //           decoration: BoxDecoration(
+              //             borderRadius: BorderRadius.circular(18),
+              //             gradient: LinearGradient(
+              //               colors: [
+              //                 Colors.deepPurpleAccent.withValues(alpha: 0.3),
+              //                 Colors.purpleAccent.withValues(alpha: 0.2),
+              //                 Colors.deepPurpleAccent.withValues(alpha: 0.3),
+              //                 Colors.purpleAccent.withValues(alpha: 0.2),
+              //                 Colors.deepPurpleAccent.withValues(alpha: 0.3),
+              //               ],
+              //               begin: Alignment.topLeft,
+              //               end: Alignment.bottomRight,
+              //             ),
+              //           ),
+              //           child: Container(
+              //             margin: const EdgeInsets.all(0.5),
+              //             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              //             decoration: BoxDecoration(
+              //               color: Colors.deepPurpleAccent.withValues(alpha: 0.3),
+              //               borderRadius: BorderRadius.circular(17.5),
+              //               border: Border.all(
+              //                 color: Colors.pink.withValues(alpha: 0.3),
+              //                 width: 0.5,
+              //               ),
+              //             ),
+              //             child: const Row(
+              //               mainAxisSize: MainAxisSize.min,
+              //               children: [
+              //                 Icon(
+              //                   FontAwesomeIcons.solidComment,
+              //                   size: 14,
+              //                   color: Colors.white70,
+              //                 ),
+              //                 SizedBox(width: 6),
+              //                 Text(
+              //                   'Ask',
+              //                   style: TextStyle(
+              //                     color: Colors.white70,
+              //                     fontSize: 14,
+              //                     fontWeight: FontWeight.w500,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //         ),
+              //       );
+              //     } else {
+              //       return const SizedBox.shrink();
+              //     }
+              //   },
+              // ),
+              Container(
+                margin: const EdgeInsets.only(left: 10),
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.white),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg",
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ],
           ),
