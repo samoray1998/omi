@@ -119,6 +119,7 @@ dependencies:
   in_app_review: ^2.0.9
   fl_chart: ^0.68.0
   image: ^4.3.0
+  waveform_flutter: ^1.2.0
 
 dependency_overrides:
   uuid: ^4.4.0

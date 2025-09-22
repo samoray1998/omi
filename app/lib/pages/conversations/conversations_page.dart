@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:omi/backend/schema/conversation.dart';
 import 'package:omi/pages/capture/widgets/widgets.dart';
+import 'package:omi/pages/conversations/widgets/converstations_widget.dart';
 import 'package:omi/pages/conversations/widgets/processing_capture.dart';
 import 'package:omi/pages/conversations/widgets/search_result_header_widget.dart';
-import 'package:omi/pages/conversations/widgets/search_widget.dart';
+// import 'package:omi/pages/conversations/widgets/search_widget.dart';
 import 'package:omi/providers/capture_provider.dart';
 import 'package:omi/providers/conversation_provider.dart';
 import 'package:omi/services/app_review_service.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:omi/utils/ui_guidelines.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -136,93 +138,100 @@ class _ConversationsPageState extends State<ConversationsPage> with AutomaticKee
   Widget build(BuildContext context) {
     debugPrint('building conversations page');
     super.build(context);
-    return Consumer<ConversationProvider>(builder: (context, convoProvider, child) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          HapticFeedback.mediumImpact();
-          Provider.of<CaptureProvider>(context, listen: false).refreshInProgressConversations();
-          await convoProvider.getInitialConversations();
-          return;
-        },
-        color: Colors.deepPurpleAccent,
-        backgroundColor: Colors.white,
-        child: CustomScrollView(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            // const SliverToBoxAdapter(child: SizedBox(height: 16)), // above capture widget
-            const SliverToBoxAdapter(child: SpeechProfileCardWidget()),
-            const SliverToBoxAdapter(child: UpdateFirmwareCardWidget()),
-            const SliverToBoxAdapter(child: ConversationCaptureWidget()),
-            const SliverToBoxAdapter(child: SizedBox(height: 12)), // above search widget
-            const SliverToBoxAdapter(child: SearchWidget()),
-            const SliverToBoxAdapter(child: SizedBox(height: 0)), //below search widget
-            const SliverToBoxAdapter(child: SearchResultHeaderWidget()),
-            getProcessingConversationsWidget(convoProvider.processingConversations),
-            if (convoProvider.groupedConversations.isEmpty && !convoProvider.isLoadingConversations)
+    return Container(
+      decoration: BoxDecoration(gradient: TayaColors.primaryGradient),
+      width: double.infinity,
+      height: double.infinity,
+      child: Consumer<ConversationProvider>(builder: (context, convoProvider, child) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            HapticFeedback.mediumImpact();
+            Provider.of<CaptureProvider>(context, listen: false).refreshInProgressConversations();
+            await convoProvider.getInitialConversations();
+            return;
+          },
+          color: Colors.deepPurpleAccent,
+          backgroundColor: Colors.white,
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              // const SliverToBoxAdapter(child: SizedBox(height: 16)), // above capture widget
+              const SliverToBoxAdapter(child: SpeechProfileCardWidget()),
+              const SliverToBoxAdapter(child: UpdateFirmwareCardWidget()),
+              const SliverToBoxAdapter(child: ConversationCaptureWidget()),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)), // above search widget
               const SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 32.0),
-                    child: EmptyConversationsWidget(),
+                child: ConverstationsWidget(),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 0)), //below search widget
+              const SliverToBoxAdapter(child: SearchResultHeaderWidget()),
+              getProcessingConversationsWidget(convoProvider.processingConversations),
+              if (convoProvider.groupedConversations.isEmpty && !convoProvider.isLoadingConversations)
+                const SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 32.0),
+                      child: EmptyConversationsWidget(),
+                    ),
+                  ),
+                )
+              else if (convoProvider.groupedConversations.isEmpty && convoProvider.isLoadingConversations)
+                _buildLoadingShimmer()
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: convoProvider.groupedConversations.length + 1,
+                    (context, index) {
+                      if (index == convoProvider.groupedConversations.length) {
+                        debugPrint('loading more conversations');
+                        if (convoProvider.isLoadingConversations) {
+                          return _buildLoadMoreShimmer();
+                        }
+                        // widget.loadMoreMemories(); // CALL this only when visible
+                        return VisibilityDetector(
+                          key: const Key('conversations-key'),
+                          onVisibilityChanged: (visibilityInfo) {
+                            var provider = Provider.of<ConversationProvider>(context, listen: false);
+                            if (provider.previousQuery.isNotEmpty) {
+                              if (visibilityInfo.visibleFraction > 0 &&
+                                  !provider.isLoadingConversations &&
+                                  (provider.totalSearchPages > provider.currentSearchPage)) {
+                                provider.searchMoreConversations();
+                              }
+                            } else {
+                              if (visibilityInfo.visibleFraction > 0 && !convoProvider.isLoadingConversations) {
+                                convoProvider.getMoreConversationsFromServer();
+                              }
+                            }
+                          },
+                          child: const SizedBox(height: 20, width: double.maxFinite),
+                        );
+                      } else {
+                        var date = convoProvider.groupedConversations.keys.elementAt(index);
+                        List<ServerConversation> memoriesForDate = convoProvider.groupedConversations[date]!;
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (index == 0) const SizedBox(height: 10),
+                            ConversationsGroupWidget(
+                              isFirst: index == 0,
+                              conversations: memoriesForDate,
+                              date: date,
+                            ),
+                          ],
+                        );
+                      }
+                    },
                   ),
                 ),
-              )
-            else if (convoProvider.groupedConversations.isEmpty && convoProvider.isLoadingConversations)
-              _buildLoadingShimmer()
-            else
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: convoProvider.groupedConversations.length + 1,
-                  (context, index) {
-                    if (index == convoProvider.groupedConversations.length) {
-                      debugPrint('loading more conversations');
-                      if (convoProvider.isLoadingConversations) {
-                        return _buildLoadMoreShimmer();
-                      }
-                      // widget.loadMoreMemories(); // CALL this only when visible
-                      return VisibilityDetector(
-                        key: const Key('conversations-key'),
-                        onVisibilityChanged: (visibilityInfo) {
-                          var provider = Provider.of<ConversationProvider>(context, listen: false);
-                          if (provider.previousQuery.isNotEmpty) {
-                            if (visibilityInfo.visibleFraction > 0 &&
-                                !provider.isLoadingConversations &&
-                                (provider.totalSearchPages > provider.currentSearchPage)) {
-                              provider.searchMoreConversations();
-                            }
-                          } else {
-                            if (visibilityInfo.visibleFraction > 0 && !convoProvider.isLoadingConversations) {
-                              convoProvider.getMoreConversationsFromServer();
-                            }
-                          }
-                        },
-                        child: const SizedBox(height: 20, width: double.maxFinite),
-                      );
-                    } else {
-                      var date = convoProvider.groupedConversations.keys.elementAt(index);
-                      List<ServerConversation> memoriesForDate = convoProvider.groupedConversations[date]!;
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (index == 0) const SizedBox(height: 10),
-                          ConversationsGroupWidget(
-                            isFirst: index == 0,
-                            conversations: memoriesForDate,
-                            date: date,
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 80),
               ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 80),
-            ),
-          ],
-        ),
-      );
-    });
+            ],
+          ),
+        );
+      }),
+    );
   }
 }
