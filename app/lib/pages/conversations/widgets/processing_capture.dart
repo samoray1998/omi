@@ -384,7 +384,7 @@ class _ConversationCaptureWidgetState extends State<ConversationCaptureWidget> {
               width: double.infinity,
               margin: const EdgeInsets.only(top: 12, bottom: 4),
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: _AutoScrollingText(
+              child: AutoScrollingText(
                 text: provider.segments.map((segment) => segment.text).join(' '),
               ),
             ),
@@ -409,7 +409,7 @@ class _ConversationCaptureWidgetState extends State<ConversationCaptureWidget> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _AutoScrollingText(
+                child: AutoScrollingText(
                   text: provider.segments.map((segment) => segment.text).join(' '),
                 ),
               ),
@@ -426,16 +426,16 @@ class _ConversationCaptureWidgetState extends State<ConversationCaptureWidget> {
   }
 }
 
-class _AutoScrollingText extends StatefulWidget {
+class AutoScrollingText extends StatefulWidget {
   final String text;
 
-  const _AutoScrollingText({required this.text});
+  const AutoScrollingText({required this.text});
 
   @override
-  State<_AutoScrollingText> createState() => _AutoScrollingTextState();
+  State<AutoScrollingText> createState() => _AutoScrollingTextState();
 }
 
-class _AutoScrollingTextState extends State<_AutoScrollingText> {
+class _AutoScrollingTextState extends State<AutoScrollingText> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -445,7 +445,7 @@ class _AutoScrollingTextState extends State<_AutoScrollingText> {
   }
 
   @override
-  void didUpdateWidget(_AutoScrollingText oldWidget) {
+  void didUpdateWidget(AutoScrollingText oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.text != oldWidget.text) {
       // Auto scroll to the end when text changes

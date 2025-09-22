@@ -66,25 +66,31 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       ],
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildNavItem(
-                          icon: Icons.auto_awesome,
-                          label: 'Moments',
-                          index: 0,
-                          isSelected: widget.selectedIndex == 0,
+                        Flexible(
+                          child: _buildNavItem(
+                            icon: Icons.auto_awesome,
+                            label: 'Moments',
+                            index: 0,
+                            isSelected: widget.selectedIndex == 0,
+                          ),
                         ),
-                        _buildNavItem(
-                          icon: Icons.edit_outlined,
-                          label: 'Journal',
-                          index: 1,
-                          isSelected: widget.selectedIndex == 1,
+                        Flexible(
+                          child: _buildNavItem(
+                            icon: Icons.edit_outlined,
+                            label: 'Journal',
+                            index: 1,
+                            isSelected: widget.selectedIndex == 1,
+                          ),
                         ),
-                        _buildNavItem(
-                          icon: Icons.refresh,
-                          label: 'Memories',
-                          index: 2,
-                          isSelected: widget.selectedIndex == 2,
+                        Flexible(
+                          child: _buildNavItem(
+                            icon: Icons.refresh,
+                            label: 'Memories',
+                            index: 2,
+                            isSelected: widget.selectedIndex == 2,
+                          ),
                         ),
                       ],
                     ),
@@ -109,7 +115,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return GestureDetector(
       onTap: () => widget.onItemTapped(index),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? Colors.grey.shade300 : Colors.transparent,
           borderRadius: BorderRadius.circular(30),
@@ -141,8 +147,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return GestureDetector(
       onTap: () => widget.onItemTapped(3), // Profile index
       child: Container(
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
           color: Color.fromRGBO(70, 175, 193, 1),
           shape: BoxShape.circle,
