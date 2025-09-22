@@ -655,7 +655,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                             //     // Remove the floating chat button - moving it to app bar
                             //   ],
                             // );
-                          
                           }
                         },
                       ),
@@ -709,7 +708,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          
           const BatteryInfoWidget(),
           const SizedBox.shrink(),
           Row(

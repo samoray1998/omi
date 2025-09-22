@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,153 @@ class CaptureProvider extends ChangeNotifier
 
   get isConnected => _isConnected;
 
+  /// some vars for audio streaming
+  ///
+  late StreamController<double> _amplitudeController;
+  bool _isStreaming = false;
+  double _currentBleAmplitude = 0.0;
+  List<int> _recentAudioSamples = [];
+  double _currentPhoneAmplitude = 0.0;
+  static const int _maxSampleBufferSize = 1600;
+  Stream<double> get amplitudeStream => _amplitudeController.stream;
+
+  // Stream<double> get amplitudeStream {
+  //   return Stream.periodic(const Duration(milliseconds: 100), (_) {
+  //     switch (recordingState) {
+  //       case RecordingState.record:
+  //         return _currentPhoneAmplitude; // Use calculated amplitude
+
+  //       case RecordingState.systemAudioRecord:
+  //         return microphoneLevel; // This one works as is
+
+  //       case RecordingState.deviceRecord:
+  //         return _getBleAmplitudeLevel();
+
+  //       default:
+  //         return 1.0;
+  //     }
+  //   }).distinct();
+  // }
+  void _updateAmplitudeStream() {
+    double amplitude = 1.0; // Default value
+
+    // Only use real amplitude values if user has started streaming
+    if (_isStreaming) {
+      switch (recordingState) {
+        case RecordingState.record:
+          amplitude = _currentPhoneAmplitude > 0.01 ? _currentPhoneAmplitude : 0.1;
+          break;
+        case RecordingState.systemAudioRecord:
+          amplitude = microphoneLevel > 0.01 ? microphoneLevel * 100 : 1.0;
+          break;
+        case RecordingState.deviceRecord:
+          amplitude = _currentBleAmplitude > 0.01 ? _currentBleAmplitude : 1.0;
+          break;
+        default:
+          amplitude = 0.0; // When stopped, return 0
+      }
+    }
+
+    _amplitudeController.add(amplitude);
+  }
+
+  double _getBleAmplitudeLevel() {
+    return _currentBleAmplitude;
+  }
+
+  Future streamAudioToWss(String deviceId, BleAudioCodec codec) async {
+    debugPrint('streamAudioToWs in capture_provider');
+    _bleBytesStream?.cancel();
+    _bleBytesStream = await _getBleAudioBytesListener(deviceId, onAudioBytesReceived: (List<int> value) {
+      final snapshot = List<int>.from(value);
+      if (snapshot.isEmpty || snapshot.length < 3) return;
+
+      // Command button triggered
+      if (_voiceCommandSession != null) {
+        _commandBytes.add(snapshot.sublist(3));
+      }
+
+      // Extract audio data (skip first 3 bytes which seem to be headers)
+      final audioData = snapshot.sublist(3);
+
+      // Calculate amplitude from audio data
+      _calculateAmplitudeFromAudioData(audioData, codec);
+
+      // Local sync
+      // Support: opus codec
+      var checkWalSupported = codec.isOpusSupported() &&
+          (_socket?.state != SocketServiceState.connected || SharedPreferencesUtil().unlimitedLocalStorageEnabled);
+      if (checkWalSupported != _isWalSupported) {
+        setIsWalSupported(checkWalSupported);
+      }
+      if (_isWalSupported) {
+        _wal.getSyncs().phone.onByteStream(snapshot);
+      }
+
+      // Send WS
+      if (_socket?.state == SocketServiceState.connected) {
+        final trimmedValue = value.sublist(3);
+        _socket?.send(trimmedValue);
+
+        // Mark as synced
+        if (_isWalSupported) {
+          _wal.getSyncs().phone.onBytesSync(value);
+        }
+      }
+    });
+    notifyListeners();
+  }
+
+  void _calculateAmplitudeFromAudioData(List<int> audioData, BleAudioCodec codec) {
+    debugPrint('🔊 Received ${audioData.length} audio bytes, codec: $codec');
+
+    if (audioData.isEmpty) return;
+
+    List<int> samples = [];
+
+    // Convert audio data to samples based on codec
+    switch (codec) {
+      case BleAudioCodec.pcm16:
+        for (int i = 0; i < audioData.length - 1; i += 2) {
+          int sample = audioData[i] | (audioData[i + 1] << 8);
+          if (sample > 32767) sample -= 65536;
+          samples.add(sample);
+        }
+        break;
+
+      case BleAudioCodec.pcm8:
+        for (int byte in audioData) {
+          int sample = byte > 127 ? byte - 256 : byte;
+          samples.add(sample * 256);
+        }
+        break;
+
+      default:
+        debugPrint('⚠️ Unsupported codec for amplitude calculation: $codec');
+        return;
+    }
+
+    if (samples.isEmpty) return;
+
+    _recentAudioSamples.addAll(samples);
+
+    if (_recentAudioSamples.length > _maxSampleBufferSize) {
+      _recentAudioSamples.removeRange(0, _recentAudioSamples.length - _maxSampleBufferSize);
+    }
+
+    double sum = 0;
+    for (int sample in _recentAudioSamples) {
+      sum += sample * sample;
+    }
+
+    double rms = sqrt(sum / _recentAudioSamples.length);
+    _currentBleAmplitude = (rms / 32767.0).clamp(0.0, 1.0);
+
+    debugPrint('📊 Calculated amplitude: $_currentBleAmplitude from ${samples.length} samples');
+  }
+
+  ///
+
   String? microphoneName;
   double microphoneLevel = 0.0;
   double systemAudioLevel = 0.0;
@@ -78,6 +226,12 @@ class CaptureProvider extends ChangeNotifier
   bool _systemAudioCaching = true;
 
   CaptureProvider() {
+    _amplitudeController = StreamController<double>.broadcast();
+
+    // Start the periodic amplitude updates
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      _updateAmplitudeStream();
+    });
     _connectionStateListener = ConnectivityService().onConnectionChange.listen((bool isConnected) {
       onConnectionStateChanged(isConnected);
     });
@@ -317,6 +471,41 @@ class CaptureProvider extends ChangeNotifier
   }
 
   Future streamAudioToWs(String deviceId, BleAudioCodec codec) async {
+    // debugPrint('streamAudioToWs in capture_provider');
+    // _bleBytesStream?.cancel();
+    // _bleBytesStream = await _getBleAudioBytesListener(deviceId, onAudioBytesReceived: (List<int> value) {
+    //   final snapshot = List<int>.from(value);
+    //   if (snapshot.isEmpty || snapshot.length < 3) return;
+
+    //   // Command button triggered
+    //   if (_voiceCommandSession != null) {
+    //     _commandBytes.add(snapshot.sublist(3));
+    //   }
+
+    //   // Local sync
+    //   // Support: opus codec
+    //   var checkWalSupported = codec.isOpusSupported() &&
+    //       (_socket?.state != SocketServiceState.connected || SharedPreferencesUtil().unlimitedLocalStorageEnabled);
+    //   if (checkWalSupported != _isWalSupported) {
+    //     setIsWalSupported(checkWalSupported);
+    //   }
+    //   if (_isWalSupported) {
+    //     _wal.getSyncs().phone.onByteStream(snapshot);
+    //   }
+
+    //   // Send WS
+    //   if (_socket?.state == SocketServiceState.connected) {
+    //     final trimmedValue = value.sublist(3);
+    //     _socket?.send(trimmedValue);
+
+    //     // Mark as synced
+    //     if (_isWalSupported) {
+    //       _wal.getSyncs().phone.onBytesSync(value);
+    //     }
+    //   }
+    // });
+    // notifyListeners();
+
     debugPrint('streamAudioToWs in capture_provider');
     _bleBytesStream?.cancel();
     _bleBytesStream = await _getBleAudioBytesListener(deviceId, onAudioBytesReceived: (List<int> value) {
@@ -327,6 +516,12 @@ class CaptureProvider extends ChangeNotifier
       if (_voiceCommandSession != null) {
         _commandBytes.add(snapshot.sublist(3));
       }
+
+      // Extract audio data (skip first 3 bytes which seem to be headers)
+      final audioData = snapshot.sublist(3);
+
+      // Calculate amplitude from audio data
+      _calculateAmplitudeFromAudioData(audioData, codec);
 
       // Local sync
       // Support: opus codec
@@ -540,6 +735,7 @@ class CaptureProvider extends ChangeNotifier
   }
 
   streamRecording() async {
+    _isStreaming = true;
     updateRecordingState(RecordingState.initialising);
     await Permission.microphone.request();
 
@@ -548,19 +744,72 @@ class CaptureProvider extends ChangeNotifier
 
     // record
     await ServiceManager.instance().mic.start(onByteReceived: (bytes) {
+      // Calculate amplitude from phone mic bytes
+      _calculatePhoneAmplitude(bytes);
+
       if (_socket?.state == SocketServiceState.connected) {
         _socket?.send(bytes);
       }
     }, onRecording: () {
       updateRecordingState(RecordingState.record);
     }, onStop: () {
+      _currentPhoneAmplitude = 0.0; // Reset amplitude when stopping
       updateRecordingState(RecordingState.stop);
     }, onInitializing: () {
       updateRecordingState(RecordingState.initialising);
     });
   }
 
+  void _calculatePhoneAmplitude(List<int> bytes) {
+    // if (bytes.isEmpty) return;
+
+    // // Assuming PCM16 format (2 bytes per sample)
+    // List<int> samples = [];
+    // for (int i = 0; i < bytes.length - 1; i += 2) {
+    //   int sample = bytes[i] | (bytes[i + 1] << 8);
+    //   if (sample > 32767) sample -= 65536;
+    //   samples.add(sample);
+    // }
+
+    // if (samples.isEmpty) return;
+
+    // // Calculate RMS
+    // double sum = 0;
+    // for (int sample in samples) {
+    //   sum += sample * sample;
+    // }
+
+    // double rms = sqrt(sum / samples.length);
+    // _currentPhoneAmplitude = (rms / 32767.0).clamp(0.0, 1.0);
+
+    // print('Phone amplitude: $_currentPhoneAmplitude');
+    if (bytes.isEmpty) return;
+
+    List<int> samples = [];
+    for (int i = 0; i < bytes.length - 1; i += 2) {
+      int sample = bytes[i] | (bytes[i + 1] << 8);
+      if (sample > 32767) sample -= 65536;
+      samples.add(sample);
+    }
+
+    if (samples.isEmpty) return;
+
+    double sum = 0;
+    for (int sample in samples) {
+      sum += sample * sample;
+    }
+
+    double rms = sqrt(sum / samples.length);
+    double normalizedAmplitude = (rms / 32767.0).clamp(0.0, 1.0);
+
+    // Scale up the amplitude - multiply by 100 to get 0-100 range
+    _currentPhoneAmplitude = (normalizedAmplitude * 100).clamp(0.0, 100.0);
+
+    print('Phone amplitude: $_currentPhoneAmplitude');
+  }
+
   stopStreamRecording() async {
+    _isStreaming = false;
     await _cleanupCurrentState();
     ServiceManager.instance().mic.stop();
     updateRecordingState(RecordingState.stop);
@@ -575,6 +824,7 @@ class CaptureProvider extends ChangeNotifier
   }
 
   Future stopStreamDeviceRecording({bool cleanDevice = false}) async {
+    _isStreaming = false;
     await _cleanupCurrentState();
     if (cleanDevice) {
       _updateRecordingDevice(null);
@@ -746,6 +996,7 @@ class CaptureProvider extends ChangeNotifier
   }
 
   Future<void> stopSystemAudioRecording() async {
+    _isStreaming = false;
     if (!PlatformService.isDesktop) return;
     _isAutoReconnecting = false;
     _reconnectTimer?.cancel();
@@ -769,6 +1020,7 @@ class CaptureProvider extends ChangeNotifier
   }
 
   Future<void> resumeSystemAudioRecording() async {
+    _isStreaming = true;
     if (!PlatformService.isDesktop) return;
     _isPaused = false; // Clear paused state
     await streamSystemAudioRecording(); // Re-trigger the recording flow
