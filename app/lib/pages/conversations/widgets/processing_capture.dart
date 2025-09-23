@@ -461,19 +461,28 @@ class _AutoScrollingTextState extends State<AutoScrollingText> {
     }
   }
 
+  String _processText(String text) {
+    // Replace dots with newlines, but be careful with decimal numbers
+    return text.replaceAllMapped(
+      RegExp(r'\.(?!\d)'), // Matches dots not followed by digits
+      (match) => '\n',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: _scrollController,
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical, // Changed to vertical for multiline
       child: Text(
-        widget.text,
+        _processText(widget.text),
+        textAlign: TextAlign.center,
         style: const TextStyle(
-          color: Color(0xFF6A6B71),
+          color: Color.fromRGBO(59, 159, 178, 0.8),
           fontSize: 16,
           height: 1.4,
         ),
-        maxLines: 1,
+        maxLines: null, // Allow multiple lines
         overflow: TextOverflow.visible,
       ),
     );

@@ -115,9 +115,9 @@ class _ConverstationsWidgetState extends State<ConverstationsWidget> {
               child: ShaderMask(
                 shaderCallback: (bounds) => LinearGradient(
                   colors: [
-                    Color.fromRGBO(131, 189, 200, 1),
+                    const Color.fromRGBO(131, 189, 200, 1),
                     TayaColors.secondaryTextColor,
-                    Color.fromRGBO(131, 189, 200, 1)
+                    const Color.fromRGBO(131, 189, 200, 1)
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -126,8 +126,7 @@ class _ConverstationsWidgetState extends State<ConverstationsWidget> {
                 child: Waveform(
                   //amplitudeStream: _mockAmplitudeStream,
                   amplitudeStream: provider.amplitudeStream.asyncMap((val) {
-                    print("sync method =>>>>{{{{${val}}}}}");
-                    return Amplitude(current: val * 1000, max: 1000);
+                    return Amplitude(current: val * 100, max: 100);
                   }),
                 ),
               ),
@@ -135,7 +134,7 @@ class _ConverstationsWidgetState extends State<ConverstationsWidget> {
             //AmplitudeTestWidget(),
             Container(
               // color: Colors.red,
-              height: 80,
+              padding: const EdgeInsets.only(bottom: 15),
               child: Center(
                 child: Text(
                   "Live transcription · Auto-stops after silence",
@@ -144,21 +143,29 @@ class _ConverstationsWidgetState extends State<ConverstationsWidget> {
               ),
             ),
             // Show transcript below controls during recording
-            if (provider.segments.isNotEmpty) ...[
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.only(top: 12, bottom: 4),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: AutoScrollingText(
-                  text: provider.segments.map((segment) => segment.text).join(' '),
+
+            Stack(
+              children: [
+                if (provider.segments.isNotEmpty) ...[
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(top: 12, bottom: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: AutoScrollingText(
+                      text: provider.segments.map((segment) => segment.text).join(' '),
+                    ),
+                  ),
+                ],
+                SizedBox(
+                  height: 15,
                 ),
-              ),
-            ],
-            SizedBox(
-              height: 15,
-            ),
-            PlayPauseButton(
-              isPlaying: isRecording,
+                Align(
+                  alignment: Alignment.center,
+                  child: PlayPauseButton(
+                    isPlaying: isRecording,
+                  ),
+                ),
+              ],
             )
           ],
         ),

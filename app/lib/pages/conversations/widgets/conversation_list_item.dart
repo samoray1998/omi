@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:omi/backend/preferences.dart';
 import 'package:omi/backend/schema/conversation.dart';
 import 'package:omi/backend/schema/structured.dart';
@@ -96,7 +97,7 @@ class _ConversationListItemState extends State<ConversationListItem> {
           child: Container(
             width: double.maxFinite,
             decoration: BoxDecoration(
-              color: const Color(0xFF1F1F25),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: ClipRRect(
@@ -185,7 +186,8 @@ class _ConversationListItemState extends State<ConversationListItem> {
               ],
               Text(
                 widget.conversation.getTranscript(maxCount: 100),
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey.shade300, height: 1.3),
+                style:
+                    Theme.of(context).textTheme.bodyMedium!.copyWith(color: Color.fromRGBO(13, 41, 81, 1), height: 1.3),
               ),
             ],
           ),
@@ -198,17 +200,20 @@ class _ConversationListItemState extends State<ConversationListItem> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          structured.title.decodeString,
-          style: Theme.of(context).textTheme.titleLarge,
-          maxLines: 1,
-        ),
+        // Text(
+        //   structured.title.decodeString,
+        //   style: Theme.of(context).textTheme.titleLarge,
+        //   maxLines: 1,
+        // ),
         const SizedBox(height: 8),
         Stack(
           children: [
             Text(
               structured.overview.decodeString,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey.shade300, height: 1.3),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(color: const Color.fromRGBO(13, 41, 81, 1), height: 1.3),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -246,6 +251,7 @@ class _ConversationListItemState extends State<ConversationListItem> {
   }
 
   _getConversationHeader() {
+    final structured = widget.conversation.structured;
     return Padding(
       padding: const EdgeInsets.only(left: 4.0, right: 12),
       child: Row(
@@ -262,27 +268,44 @@ class _ConversationListItemState extends State<ConversationListItem> {
                     widget.conversation.structured.getEmoji(),
                     style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500),
                   ),
-                if (widget.conversation.structured.category.isNotEmpty && !widget.conversation.discarded)
-                  const SizedBox(width: 8),
-                if (widget.conversation.structured.category.isNotEmpty)
-                  Flexible(
+
+                if (structured.title.isNotEmpty)
+                  Expanded(
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: widget.conversation.getTagColor(),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.only(left: 5),
                       child: Text(
-                        widget.conversation.getTag(),
+                        structured.title.decodeString,
                         style: Theme.of(context)
                             .textTheme
-                            .bodyMedium!
-                            .copyWith(color: widget.conversation.getTagTextColor()),
+                            .titleLarge!
+                            .copyWith(color: const Color.fromRGBO(13, 41, 81, 1)),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                     ),
                   ),
+
+                // if (widget.conversation.structured.category.isNotEmpty && !widget.conversation.discarded)
+                //   const SizedBox(width: 8),
+                // if (widget.conversation.structured.category.isNotEmpty)
+                //   Flexible(
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //         color: widget.conversation.getTagColor(),
+                //         borderRadius: BorderRadius.circular(16),
+                //       ),
+                //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                //       child: Text(
+                //         widget.conversation.getTag(),
+                //         style: Theme.of(context)
+                //             .textTheme
+                //             .bodyMedium!
+                //             .copyWith(color: widget.conversation.getTagTextColor()),
+                //         overflow: TextOverflow.ellipsis,
+                //         maxLines: 1,
+                //       ),
+                //     ),
+                //   ),
               ],
             ),
           ),
@@ -299,28 +322,39 @@ class _ConversationListItemState extends State<ConversationListItem> {
                     children: [
                       Text(
                         dateTimeFormat(
-                          'MMM d, h:mm a',
+                          'h:mm a',
                           widget.conversation.startedAt ?? widget.conversation.createdAt,
                         ),
-                        style: const TextStyle(color: Color(0xFF6A6B71), fontSize: 14),
+                        style: const TextStyle(
+                            color: Color.fromRGBO(191, 185, 165, 1), fontSize: 12, fontWeight: FontWeight.w600),
                         maxLines: 1,
                       ),
-                      if (_getConversationDuration().isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF35343B),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              _getConversationDuration(),
-                              style: const TextStyle(color: Colors.white, fontSize: 11),
-                              maxLines: 1,
-                            ),
-                          ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        child: const FaIcon(
+                          FontAwesomeIcons.arrowUpRightFromSquare,
+                          color: Color.fromRGBO(191, 185, 165, 1),
+                          size: 15,
                         ),
+                      )
+                      // if (_getConversationDuration().isNotEmpty)
+                      //   Padding(
+                      //     padding: const EdgeInsets.only(left: 8.0),
+                      //     child: Container(
+                      //       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      //       decoration: BoxDecoration(
+                      //         color: const Color(0xFF35343B),
+                      //         borderRadius: BorderRadius.circular(4),
+                      //       ),
+                      //       child: Text(
+                      //         _getConversationDuration(),
+                      //         style: const TextStyle(color: Colors.white, fontSize: 11),
+                      //         maxLines: 1,
+                      //       ),
+                      //     ),
+                      //   ),
                     ],
                   ),
           ),
