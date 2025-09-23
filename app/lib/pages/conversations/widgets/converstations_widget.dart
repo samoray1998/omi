@@ -1,10 +1,62 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/src/services/haptic_feedback.dart';
+import 'package:omi/pages/conversation_capturing/page.dart';
+import 'package:omi/pages/conversations/widgets/processing_capture.dart';
+import 'package:omi/providers/capture_provider.dart';
+import 'package:omi/utils/analytics/mixpanel.dart';
+import 'package:omi/utils/enums.dart';
 import 'package:omi/utils/styles.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 
 import 'package:waveform_flutter/waveform_flutter.dart';
+
+class AmplitudeTestWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CaptureProvider>(
+      builder: (context, captureProvider, child) {
+        return Column(
+          children: [
+            Text('Recording State: ${captureProvider.recordingState}'),
+            Text('Mic Level: ${captureProvider.microphoneLevel}'),
+            Text('System Audio Level: ${captureProvider.systemAudioLevel}'),
+
+            StreamBuilder<double>(
+              stream: captureProvider.amplitudeStream,
+              builder: (context, snapshot) {
+                return Text('Stream Amplitude: ${snapshot.data ?? "No data"}');
+              },
+            ),
+
+            // Simple visual indicator
+            StreamBuilder<double>(
+              stream: captureProvider.amplitudeStream,
+              builder: (context, snapshot) {
+                double amplitude = snapshot.data ?? 0.0;
+                return Container(
+                  width: 200,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: LinearProgressIndicator(
+                    value: amplitude,
+                    backgroundColor: Colors.transparent,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
 class ConverstationsWidget extends StatefulWidget {
   const ConverstationsWidget({super.key});
@@ -16,6 +68,7 @@ class ConverstationsWidget extends StatefulWidget {
 class _ConverstationsWidgetState extends State<ConverstationsWidget> {
   late final Stream<Amplitude> _mockAmplitudeStream;
   final Random _random = Random();
+  bool _isPhoneMicPaused = false;
   @override
   void initState() {
     super.initState();
@@ -24,68 +77,113 @@ class _ConverstationsWidgetState extends State<ConverstationsWidget> {
     _mockAmplitudeStream = Stream.periodic(
       const Duration(milliseconds: 70),
       (count) => Amplitude(
-        current: 50,
+        current: 10 * 100,
         // current: Random().nextDouble() * 20, // 🔥 smaller wave (0–20 instead of 0–100)
-        max: 20,
+        max: 100,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        children: [
-          // lestning charts
+    return Consumer<CaptureProvider>(builder: (context, provider, child) {
+      bool isDeviceRecording = provider.havingRecordingDevice &&
+          (provider.recordingState == RecordingState.deviceRecord || provider.recordingState == RecordingState.pause);
+      bool isPhoneRecording = provider.recordingState == RecordingState.record ||
+          provider.recordingState == RecordingState.systemAudioRecord ||
+          provider.recordingState == RecordingState.initialising ||
+          _isPhoneMicPaused;
+      bool isRecording = provider.recordingState == RecordingState.record;
 
-          Container(
-            // height: 30,
-            //child: AudioWaveformDemo(),
-            child: ShaderMask(
-              shaderCallback: (bounds) => LinearGradient(
-                colors: [
-                  Color.fromRGBO(131, 189, 200, 1),
-                  TayaColors.secondaryTextColor,
-                  Color.fromRGBO(131, 189, 200, 1)
+      print("💌💌💌💌💌💌💌>=== ${isRecording}");
+      // Determine pause state based on recording type
+      bool isPaused = false;
+      if (isDeviceRecording) {
+        isPaused = provider.isPaused && provider.recordingState == RecordingState.pause;
+      } else if (isPhoneRecording) {
+        isPaused = _isPhoneMicPaused || provider.isPaused;
+      }
+      return Container(
+        width: double.infinity,
+        child: Column(
+          children: [
+            // lestning charts
+
+            Container(
+              // height: 30,
+              //child: AudioWaveformDemo(),
+              child: ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: [
+                    const Color.fromRGBO(131, 189, 200, 1),
+                    TayaColors.secondaryTextColor,
+                    const Color.fromRGBO(131, 189, 200, 1)
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds),
+                blendMode: BlendMode.srcIn,
+                child: Waveform(
+                  //amplitudeStream: _mockAmplitudeStream,
+                  amplitudeStream: provider.amplitudeStream.asyncMap((val) {
+                    return Amplitude(current: val * 100, max: 100);
+                  }),
+                ),
+              ),
+            ),
+            // AmplitudeTestWidget(),
+            Container(
+              // color: Colors.red,
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Center(
+                child: Text(
+                  "Live transcription · Auto-stops after silence",
+                  style: TextStyle(color: TayaColors.secondaryTextColor, fontSize: 12, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            // Show transcript below controls during recording
+
+            Stack(
+              children: [
+                if (provider.segments.isNotEmpty) ...[
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(top: 12, bottom: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: AutoScrollingText(
+                      text: provider.segments.map((segment) => segment.text).join(' '),
+                    ),
+                  ),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ).createShader(bounds),
-              blendMode: BlendMode.srcIn,
-              child: Waveform(
-                amplitudeStream: _mockAmplitudeStream,
-              ),
-            ),
-          ),
-          Container(
-            // color: Colors.red,
-            height: 80,
-            child: Center(
-              child: Text(
-                "Live transcription · Auto-stops after silence",
-                style: TextStyle(color: TayaColors.secondaryTextColor, fontSize: 12, fontWeight: FontWeight.w500),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          PlayPauseButton(),
-        ],
-      ),
-    );
+                SizedBox(
+                  height: 15,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: PlayPauseButton(
+                    isPlaying: isRecording,
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 
 class PlayPauseButton extends StatefulWidget {
   final double size;
   final Color color;
+  final bool isPlaying;
 
   const PlayPauseButton({
     super.key,
     this.size = 48,
     this.color = Colors.black,
+    this.isPlaying = false,
   });
 
   @override
@@ -94,15 +192,39 @@ class PlayPauseButton extends StatefulWidget {
 
 class _PlayPauseButtonState extends State<PlayPauseButton> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  bool _isPlaying = false;
+  late bool _isPlaying;
 
   @override
   void initState() {
     super.initState();
+    _isPlaying = widget.isPlaying; // 👈 initialize from widget
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+
+    // 👇 if starting as playing, forward the animation
+    if (_isPlaying) {
+      _controller.value = 1.0;
+    }
+  }
+
+  @override
+  void didUpdateWidget(PlayPauseButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Listen to changes from the provider
+    if (oldWidget.isPlaying != widget.isPlaying) {
+      setState(() {
+        _isPlaying = widget.isPlaying;
+        if (_isPlaying) {
+          _controller.forward();
+        } else {
+          _controller.reverse();
+        }
+      });
+    }
   }
 
   @override
@@ -114,32 +236,68 @@ class _PlayPauseButtonState extends State<PlayPauseButton> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 70,
-      height: 70,
-      decoration: const BoxDecoration(
-        color: Color.fromRGBO(59, 159, 178, 1),
-        shape: BoxShape.circle,
-      ),
-      child: IconButton(
-        iconSize: widget.size,
-        color: widget.color,
-        icon: AnimatedIcon(
-          color: Colors.white,
-          icon: AnimatedIcons.play_pause,
-          progress: _controller,
+        width: 70,
+        height: 70,
+        decoration: const BoxDecoration(
+          color: Color.fromRGBO(59, 159, 178, 1),
+          shape: BoxShape.circle,
         ),
-        onPressed: () {
-          setState(() {
-            if (_isPlaying) {
-              _controller.reverse();
-            } else {
-              _controller.forward();
-            }
-            _isPlaying = !_isPlaying;
-          });
-        },
-      ),
-    );
+        child: Consumer<CaptureProvider>(builder: (context, provider, child) {
+          bool isInitializing = provider.recordingState == RecordingState.initialising;
+          return IconButton(
+            iconSize: widget.size,
+            color: widget.color,
+            icon: AnimatedIcon(
+              color: Colors.white,
+              icon: AnimatedIcons.play_pause,
+              progress: _controller,
+            ),
+            onPressed: () async {
+              HapticFeedback.heavyImpact();
+              if (isInitializing) return;
+              await _handleRecordButtonPress(context, provider);
+              // setState(() {
+              //   if (_isPlaying) {
+              //     _controller.reverse();
+              //   } else {
+              //     _controller.forward();
+              //   }
+              //   _isPlaying = !_isPlaying;
+              // });
+            },
+          );
+        }));
+  }
+}
+
+Future<void> _handleRecordButtonPress(BuildContext context, CaptureProvider captureProvider) async {
+  var recordingState = captureProvider.recordingState;
+
+  if (recordingState == RecordingState.record) {
+    // Stop recording and summarize conversation
+    await captureProvider.stopStreamRecording();
+    captureProvider.forceProcessingCurrentConversation();
+    MixpanelManager().phoneMicRecordingStopped();
+  } else if (recordingState == RecordingState.initialising) {
+    // Already initializing, do nothing
+    debugPrint('initialising, have to wait');
+  } else {
+    // Start recording directly without dialog
+    await captureProvider.streamRecording();
+    MixpanelManager().phoneMicRecordingStarted();
+
+    // Navigate to conversation capturing page
+    if (context.mounted) {
+      var topConvoId = (captureProvider.conversationProvider?.conversations ?? []).isNotEmpty
+          ? captureProvider.conversationProvider!.conversations.first.id
+          : null;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ConversationCapturingPage(topConversationId: topConvoId),
+        ),
+      );
+    }
   }
 }
 
