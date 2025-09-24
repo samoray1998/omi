@@ -178,7 +178,7 @@ class _SpeechProfileWidgetState extends State<SpeechProfileWidget> with TickerPr
                         ? const Column(
                             children: [
                               Text(
-                                'Omi needs to learn your voice to recognize you',
+                                'Taya needs to learn your voice to recognize you',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,

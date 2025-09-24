@@ -122,7 +122,7 @@ class _DeviceSelectionPageState extends State<DeviceSelectionPage> with SingleTi
                       children: [
                         // Title and subtitle
                         const Text(
-                          'Omi – Your AI Companion',
+                          'Taya – Your AI Companion',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 34,

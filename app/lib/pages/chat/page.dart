@@ -162,7 +162,7 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
                                 ),
                                 SizedBox(height: 16),
                                 Text(
-                                  "Deleting your messages from Omi's memory...",
+                                  "Deleting your messages from Taya's memory...",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -230,8 +230,8 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
                                               MixpanelManager()
                                                   .track('Chat Message Shared', properties: {'message': message.text});
                                               Share.share(
-                                                '${message.text.decodeString}\n\nResponse from Omi. Get yours at https://omi.me',
-                                                subject: 'Chat with Omi',
+                                                '${message.text.decodeString}\n\nResponse from Taya. Get yours at https://omi.me',
+                                                subject: 'Chat with Taya',
                                               );
                                               Navigator.pop(context);
                                             },
@@ -817,7 +817,7 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
               maxWidth: 100,
             ),
             child: Text(
-              selectedApp != null ? selectedApp.getName() : "Omi",
+              selectedApp != null ? selectedApp.getName() : "Taya",
               style: const TextStyle(color: Colors.white, fontSize: 16),
               overflow: TextOverflow.fade,
             ),
@@ -967,7 +967,7 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "Omi",
+                    "Taya",
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                   selectedApp == null

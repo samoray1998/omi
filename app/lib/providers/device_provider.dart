@@ -258,12 +258,12 @@ class DeviceProvider extends ChangeNotifier implements IDeviceServiceSubsciption
     // Wals
     ServiceManager.instance().wal.getSyncs().sdcard.setDevice(null);
 
-    PlatformManager.instance.crashReporter.logInfo('Omi Device Disconnected');
+    PlatformManager.instance.crashReporter.logInfo('Taya Device Disconnected');
     _disconnectNotificationTimer?.cancel();
     _disconnectNotificationTimer = Timer(const Duration(seconds: 30), () {
       NotificationService.instance.createNotification(
-        title: 'Your Omi Device Disconnected',
-        body: 'Please reconnect to continue using your Omi.',
+        title: 'Your Taya Device Disconnected',
+        body: 'Please reconnect to continue using your Taya.',
       );
     });
     MixpanelManager().deviceDisconnected();

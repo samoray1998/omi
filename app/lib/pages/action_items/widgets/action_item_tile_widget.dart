@@ -324,7 +324,7 @@ class _ActionItemTileWidgetState extends State<ActionItemTileWidget> {
     // Add to Apple Reminders
     final success = await service.addReminder(
       title: widget.actionItem.description,
-      notes: 'From Omi',
+      notes: 'From Taya',
       dueDate: widget.actionItem.dueAt,
       listName: 'Reminders',
     );

@@ -401,7 +401,7 @@ class MixpanelManager {
 
   void setUserProperties(String whatDoYouDo, String whereDoYouPlanToUseYourFriend, String ageRange) {
     setUserProperty('What the user does', whatDoYouDo);
-    setUserProperty('Using Omi At', whereDoYouPlanToUseYourFriend);
+    setUserProperty('Using Taya At', whereDoYouPlanToUseYourFriend);
     setUserProperty('Age Range', ageRange);
   }
 

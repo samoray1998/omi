@@ -63,7 +63,7 @@ class SpeechProfileCardWidget extends StatelessWidget {
                                   Icon(Icons.multitrack_audio),
                                   SizedBox(width: 16),
                                   Text(
-                                    'Teach Omi your voice',
+                                    'Teach Taya your voice',
                                     style: TextStyle(color: Colors.white, fontSize: 16),
                                   ),
                                 ],

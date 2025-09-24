@@ -51,7 +51,7 @@ class _DesktopAboutOmiPageState extends State<DesktopAboutOmiPage> {
         ),
         const SizedBox(width: 16),
         Text(
-          'About Omi',
+          'About Taya',
           style: responsive.headlineLarge.copyWith(
             fontWeight: FontWeight.w400,
           ),
@@ -173,7 +173,7 @@ class _DesktopAboutOmiPageState extends State<DesktopAboutOmiPage> {
                 final Uri emailUri = Uri(
                   scheme: 'mailto',
                   path: 'team@basedhardware.com',
-                  query: 'subject=Omi Desktop App Inquiry',
+                  query: 'subject=Taya Desktop App Inquiry',
                 );
                 if (await canLaunchUrl(emailUri)) {
                   await launchUrl(emailUri);

@@ -22,6 +22,7 @@ import 'package:omi/providers/conversation_provider.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/other/temp.dart';
 import 'package:omi/utils/other/time_utils.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:omi/widgets/dialog.dart';
 import 'package:omi/widgets/extensions/string.dart';
 import 'package:provider/provider.dart';
@@ -129,7 +130,7 @@ class GetSummaryWidgets extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.2),
+        color: const Color.fromRGBO(156, 203, 211, 1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -138,13 +139,13 @@ class GetSummaryWidgets extends StatelessWidget {
           Icon(
             icon,
             size: 14,
-            color: Colors.grey.shade300,
+            color: Colors.white,
           ),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(
-              color: Colors.grey.shade300,
+            style: const TextStyle(
+              color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -483,108 +484,108 @@ class AppResultDetailWidget extends StatelessWidget {
           ),
 
           // App info in a more subtle format below the content - only show if content is not empty
-          if (content.isNotEmpty)
-            GestureDetector(
-              onTap: () async {
-                if (app != null) {
-                  MixpanelManager().pageOpened('App Detail');
-                  await routeToPage(context, AppDetailPage(app: app!));
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12, left: 4),
-                child: Row(
-                  children: [
-                    // App icon
-                    app != null
-                        ? CachedNetworkImage(
-                            imageUrl: app!.getImageUrl(),
-                            imageBuilder: (context, imageProvider) {
-                              return CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 12,
-                                backgroundImage: imageProvider,
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return const CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 12,
-                                child: Icon(Icons.error_outline_rounded, size: 12),
-                              );
-                            },
-                            progressIndicatorBuilder: (context, url, progress) => CircleAvatar(
-                              backgroundColor: Colors.white,
-                              radius: 12,
-                              child: CircularProgressIndicator(
-                                value: progress.progress,
-                                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                                strokeWidth: 2,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(Assets.images.background.path),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                            ),
-                            height: 24,
-                            width: 24,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Image.asset(
-                                  Assets.images.herologo.path,
-                                  height: 16,
-                                  width: 16,
-                                ),
-                              ],
-                            ),
-                          ),
+          // if (content.isNotEmpty)
+          //   GestureDetector(
+          //     onTap: () async {
+          //       if (app != null) {
+          //         MixpanelManager().pageOpened('App Detail');
+          //         await routeToPage(context, AppDetailPage(app: app!));
+          //       }
+          //     },
+          //     child: Padding(
+          //       padding: const EdgeInsets.only(top: 12, left: 4),
+          //       child: Row(
+          //         children: [
+          //           // App icon
+          //           app != null
+          //               ? CachedNetworkImage(
+          //                   imageUrl: app!.getImageUrl(),
+          //                   imageBuilder: (context, imageProvider) {
+          //                     return CircleAvatar(
+          //                       backgroundColor: Colors.white,
+          //                       radius: 12,
+          //                       backgroundImage: imageProvider,
+          //                     );
+          //                   },
+          //                   errorWidget: (context, url, error) {
+          //                     return const CircleAvatar(
+          //                       backgroundColor: Colors.white,
+          //                       radius: 12,
+          //                       child: Icon(Icons.error_outline_rounded, size: 12),
+          //                     );
+          //                   },
+          //                   progressIndicatorBuilder: (context, url, progress) => CircleAvatar(
+          //                     backgroundColor: Colors.white,
+          //                     radius: 12,
+          //                     child: CircularProgressIndicator(
+          //                       value: progress.progress,
+          //                       valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+          //                       strokeWidth: 2,
+          //                     ),
+          //                   ),
+          //                 )
+          //               : Container(
+          //                   decoration: BoxDecoration(
+          //                     image: DecorationImage(
+          //                       image: AssetImage(Assets.images.background.path),
+          //                       fit: BoxFit.cover,
+          //                     ),
+          //                     borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          //                   ),
+          //                   height: 24,
+          //                   width: 24,
+          //                   child: Stack(
+          //                     alignment: Alignment.center,
+          //                     children: [
+          //                       Image.asset(
+          //                         Assets.images.herologo.path,
+          //                         height: 16,
+          //                         width: 16,
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
 
-                    const SizedBox(width: 8),
+          //           const SizedBox(width: 8),
 
-                    // App name and description with arrow
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  app != null ? app!.name.decodeString : 'Unknown App',
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                if (app != null)
-                                  Text(
-                                    app!.description.decodeString,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            child: Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
-                            width: 42,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          //           // App name and description with arrow
+          //           Expanded(
+          //             child: Row(
+          //               children: [
+          //                 Expanded(
+          //                   child: Column(
+          //                     crossAxisAlignment: CrossAxisAlignment.start,
+          //                     children: [
+          //                       Text(
+          //                         app != null ? app!.name.decodeString : 'Unknown App',
+          //                         maxLines: 1,
+          //                         style: const TextStyle(
+          //                           fontWeight: FontWeight.w500,
+          //                           color: Colors.white,
+          //                           fontSize: 14,
+          //                         ),
+          //                       ),
+          //                       if (app != null)
+          //                         Text(
+          //                           app!.description.decodeString,
+          //                           maxLines: 1,
+          //                           overflow: TextOverflow.ellipsis,
+          //                           style: const TextStyle(color: Colors.grey, fontSize: 12),
+          //                         ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //                 const SizedBox(
+          //                   child: Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
+          //                   width: 42,
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );
@@ -615,11 +616,14 @@ class GetAppsWidgets extends StatelessWidget {
                       children: [
                         Text(
                           'Summary',
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 20),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(fontSize: 20, color: TayaColors.secondaryTextColor),
                           textAlign: TextAlign.start,
                         ),
                         IconButton(
-                          icon: const Icon(Icons.copy_rounded, color: Colors.white, size: 20),
+                          icon: Icon(Icons.copy_rounded, color: TayaColors.secondaryTextColor, size: 20),
                           onPressed: () {
                             final String content = summarizedApp.content.decodeString;
                             Clipboard.setData(ClipboardData(text: content));

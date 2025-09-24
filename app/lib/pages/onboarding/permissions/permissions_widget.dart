@@ -74,7 +74,7 @@ class _PermissionsWidgetState extends State<PermissionsWidget> {
                         _buildPermissionTile(
                           value: provider.hasBackgroundPermission,
                           title: 'Background activity',
-                          subtitle: 'Let Omi run in the background for better stability',
+                          subtitle: 'Let Taya run in the background for better stability',
                           onChanged: (s) async {
                             if (s != null) {
                               if (s) {

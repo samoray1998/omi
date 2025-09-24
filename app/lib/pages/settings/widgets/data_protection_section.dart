@@ -43,7 +43,7 @@ class _DataProtectionSectionState extends State<DataProtectionSection> {
             children: const [
               TextSpan(
                   text:
-                      'End-to-end encryption is the gold standard for privacy. When enabled, your data is encrypted on your device before it\'s sent to our servers. This means no one, not even Omi, can access your content.\n\n'),
+                      'End-to-end encryption is the gold standard for privacy. When enabled, your data is encrypted on your device before it\'s sent to our servers. This means no one, not even Taya, can access your content.\n\n'),
               TextSpan(
                 text: 'Important Trade-offs:\n',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -255,7 +255,7 @@ class _DataProtectionSectionState extends State<DataProtectionSection> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Your data is encrypted with a key unique to you on our servers, hosted on Google Cloud. This means your raw content is inaccessible to anyone, including Omi staff or Google, directly from the database.',
+                  'Your data is encrypted with a key unique to you on our servers, hosted on Google Cloud. This means your raw content is inaccessible to anyone, including Taya staff or Google, directly from the database.',
                   style: TextStyle(color: Colors.grey.shade400, fontSize: 14, height: 1.4),
                 ),
               ],

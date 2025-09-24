@@ -221,7 +221,7 @@ class _SocialHandleScreenState extends State<SocialHandleScreen> {
                                   routeToPage(context, const OnboardingWrapper());
                                 },
                                 child: const Text(
-                                  'Connect Omi Device',
+                                  'Connect Taya Device',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,

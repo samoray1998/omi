@@ -17,6 +17,7 @@ import 'package:omi/pages/apps/page.dart';
 import 'package:omi/pages/chat/page.dart';
 import 'package:omi/pages/conversations/conversations_page.dart';
 import 'package:omi/pages/home/widgets/custom_bottom_bar_widget.dart';
+import 'package:omi/pages/journals/journal_editor_screen.dart';
 import 'package:omi/pages/memories/page.dart';
 import 'package:omi/pages/settings/data_privacy_page.dart';
 import 'package:omi/pages/settings/settings_drawer.dart';
@@ -192,9 +193,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
   void initState() {
     _pages = [
       ConversationsPage(key: _conversationsPageKey),
-      ActionItemsPage(key: _actionItemsPageKey),
+      // ActionItemsPage(key: _actionItemsPageKey),
+      const JournalEditorScreen(),
       MemoriesPage(key: _memoriesPageKey),
-      AppsPage(key: _appsPageKey),
+      // AppsPage(key: _appsPageKey),
+      Container(
+        color: Colors.white,
+        child: Center(
+          child: Text(
+            "Comming soon !!!",
+            style: TextStyle(color: TayaColors.secondaryTextColor),
+          ),
+        ),
+      )
     ];
     SharedPreferencesUtil().onboardingCompleted = true;
 
@@ -426,7 +437,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
           builder: (context, homeProvider, _) {
             return Scaffold(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              appBar: homeProvider.selectedIndex == 5 ? null : _buildAppBar(context),
+              appBar: homeProvider.selectedIndex == 1 ? null : _buildAppBar(context),
               body: DefaultTabController(
                 length: 4,
                 initialIndex: homeProvider.selectedIndex,

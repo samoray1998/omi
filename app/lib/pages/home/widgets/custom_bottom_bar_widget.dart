@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:omi/utils/styles.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -154,7 +155,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           shape: BoxShape.circle,
         ),
         child: const Icon(
-          Icons.quickreply_outlined,
+          FontAwesomeIcons.comments,
           color: Colors.white,
           size: 25,
         ),

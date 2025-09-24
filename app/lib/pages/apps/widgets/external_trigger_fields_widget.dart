@@ -260,7 +260,7 @@ class ExternalTriggerFieldsWidget extends StatelessWidget {
                                   style: TextStyle(color: Colors.grey.shade100),
                                 ),
                                 content: Text(
-                                  'Omi opens this URL instantly when users launch your app after installation, perfect for authentication or setup instructions.',
+                                  'Taya opens this URL instantly when users launch your app after installation, perfect for authentication or setup instructions.',
                                   style: TextStyle(color: Colors.grey.shade300),
                                 ),
                                 actions: [

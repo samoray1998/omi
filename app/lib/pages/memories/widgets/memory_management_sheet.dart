@@ -235,11 +235,11 @@ class MemoryManagementSheet extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppStyles.backgroundSecondary,
         title: const Text(
-          'Clear Omi\'s Memory',
+          'Clear Taya\'s Memory',
           style: TextStyle(color: Colors.white),
         ),
         content: Text(
-          'Are you sure you want to clear Omi\'s memory? This action cannot be undone.',
+          'Are you sure you want to clear Taya\'s memory? This action cannot be undone.',
           style: TextStyle(color: Colors.grey.shade300),
         ),
         actions: [
@@ -257,7 +257,7 @@ class MemoryManagementSheet extends StatelessWidget {
               Navigator.pop(context); // Close sheet
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Omi\'s memory about you has been cleared'),
+                  content: const Text('Taya\'s memory about you has been cleared'),
                   backgroundColor: AppStyles.backgroundTertiary,
                   duration: const Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,

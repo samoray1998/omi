@@ -136,7 +136,7 @@ class _UsagePageState extends State<UsagePage> with TickerProviderStateMixin {
     final numberFormatter = NumberFormat.decimalPattern('en_US');
 
     String shareText;
-    const baseText = 'Sharing my Omi stats! (omi.me - your always-on AI assistant)';
+    const baseText = 'Sharing my Taya stats! (Taya.me - your always-on AI assistant)';
 
     if (stats != null) {
       final transcriptionMinutes = (stats.transcriptionSeconds / 60).round();
@@ -159,19 +159,19 @@ class _UsagePageState extends State<UsagePage> with TickerProviderStateMixin {
         String periodText;
         switch (periodTitle) {
           case 'Today':
-            periodText = 'Today, omi has:';
+            periodText = 'Today, Taya has:';
             break;
           case 'This Month':
-            periodText = 'This month, omi has:';
+            periodText = 'This month, Taya has:';
             break;
           case 'This Year':
-            periodText = 'This year, omi has:';
+            periodText = 'This year, Taya has:';
             break;
           case 'All Time':
-            periodText = 'So far, omi has:';
+            periodText = 'So far, Taya has:';
             break;
           default:
-            periodText = 'Omi has:';
+            periodText = 'Taya has:';
         }
         shareText = '$baseText\n\n$periodText\n${funStats.join('\n')}';
       } else {
@@ -285,7 +285,7 @@ class _UsagePageState extends State<UsagePage> with TickerProviderStateMixin {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Your Omi Insights'),
+        title: const Text('Your Taya Insights'),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -650,7 +650,7 @@ class _UsagePageState extends State<UsagePage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 8),
           Text(
-            'Start a conversation with Omi\nto see your usage insights here.',
+            'Start a conversation with Taya\nto see your usage insights here.',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.grey.shade400),
           ),
@@ -720,7 +720,7 @@ class _UsagePageState extends State<UsagePage> with TickerProviderStateMixin {
                 icon: FontAwesomeIcons.microphone,
                 title: 'Listening',
                 value: transcriptionValue,
-                subtitle: 'Total time Omi has actively listened.',
+                subtitle: 'Total time Taya has actively listened.',
                 color: Colors.blue.shade300,
                 subscription: provider.subscription,
               ),

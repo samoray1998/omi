@@ -92,7 +92,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
 
                 // Main title
                 const Text(
-                  'Loving Omi?',
+                  'Loving Taya?',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,

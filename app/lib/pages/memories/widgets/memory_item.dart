@@ -37,7 +37,7 @@ class MemoryItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: AppStyles.spacingL, vertical: AppStyles.spacingL),
         decoration: BoxDecoration(
-          color: AppStyles.backgroundSecondary,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -57,15 +57,15 @@ class MemoryItem extends StatelessWidget {
                     children: [
                       Text(
                         memory.content.decodeString,
-                        style: AppStyles.body,
+                        style: TextStyle(color: Color.fromRGBO(13, 41, 81, 1)),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: AppStyles.spacingM),
-                _buildVisibilityButton(context),
+                //const SizedBox(width: AppStyles.spacingM),
+                //_buildVisibilityButton(context),
               ],
             ),
             if (memory.isLocked)
