@@ -5,6 +5,7 @@ import 'package:omi/pages/capture/widgets/widgets.dart';
 import 'package:omi/pages/conversations/widgets/converstations_widget.dart';
 import 'package:omi/pages/conversations/widgets/processing_capture.dart';
 import 'package:omi/pages/conversations/widgets/search_result_header_widget.dart';
+import 'package:omi/pages/conversations/widgets/search_widget.dart';
 // import 'package:omi/pages/conversations/widgets/search_widget.dart';
 import 'package:omi/providers/capture_provider.dart';
 import 'package:omi/providers/conversation_provider.dart';
@@ -159,12 +160,13 @@ class _ConversationsPageState extends State<ConversationsPage> with AutomaticKee
               // const SliverToBoxAdapter(child: SizedBox(height: 16)), // above capture widget
               const SliverToBoxAdapter(child: SpeechProfileCardWidget()),
               const SliverToBoxAdapter(child: UpdateFirmwareCardWidget()),
-              //const SliverToBoxAdapter(child: ConversationCaptureWidget()),
+              // const SliverToBoxAdapter(child: ConversationCaptureWidget()),
               const SliverToBoxAdapter(child: SizedBox(height: 12)), // above search widget
               const SliverToBoxAdapter(
                 child: ConverstationsWidget(),
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: 0)), //below search widget
+              const SliverToBoxAdapter(child: SizedBox(height: 0)),
+              // const SliverToBoxAdapter(child: SearchWidget()), //below search widget
               const SliverToBoxAdapter(child: SearchResultHeaderWidget()),
               getProcessingConversationsWidget(convoProvider.processingConversations),
               if (convoProvider.groupedConversations.isEmpty && !convoProvider.isLoadingConversations)

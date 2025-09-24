@@ -14,6 +14,7 @@ import 'package:omi/main.dart';
 import 'package:omi/pages/action_items/action_items_page.dart';
 import 'package:omi/pages/apps/app_detail/app_detail.dart';
 import 'package:omi/pages/apps/page.dart';
+import 'package:omi/pages/apps/search_page/search_page.dart';
 import 'package:omi/pages/chat/page.dart';
 import 'package:omi/pages/conversations/conversations_page.dart';
 import 'package:omi/pages/home/widgets/custom_bottom_bar_widget.dart';
@@ -742,6 +743,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                     color: TayaColors.secondaryTextColor,
                   ),
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SearchPage(),
+                      ),
+                    );
+
                     ///TODO add Logic for search
                     ///
 
