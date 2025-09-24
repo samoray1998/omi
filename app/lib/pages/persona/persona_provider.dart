@@ -292,7 +292,7 @@ class PersonaProvider extends ChangeNotifier {
 
   Future<void> updatePersona() async {
     if (!hasOmiConnection && !hasTwitterConnection) {
-      AppSnackbar.showSnackbarError('Please connect at least one knowledge data source (Omi or Twitter)');
+      AppSnackbar.showSnackbarError('Please connect at least one knowledge data source (Taya or Twitter)');
       return;
     }
 

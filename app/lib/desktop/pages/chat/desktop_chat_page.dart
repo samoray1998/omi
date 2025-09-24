@@ -292,7 +292,7 @@ class DesktopChatPageState extends State<DesktopChatPage> with AutomaticKeepAliv
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              selectedApp?.name ?? 'Omi',
+                              selectedApp?.name ?? 'Taya',
                               style: const TextStyle(
                                 color: ResponsiveHelper.textPrimary,
                                 fontSize: 14,
@@ -410,7 +410,7 @@ class DesktopChatPageState extends State<DesktopChatPage> with AutomaticKeepAliv
     }
 
     if (provider.isClearingChat) {
-      return _buildLoadingState("Deleting your messages from Omi's memory...");
+      return _buildLoadingState("Deleting your messages from Taya's memory...");
     }
 
     if (provider.messages.isEmpty) {
@@ -1362,8 +1362,8 @@ class DesktopChatPageState extends State<DesktopChatPage> with AutomaticKeepAliv
         onShare: () {
           MixpanelManager().track('Chat Message Shared', properties: {'message': message.text});
           Share.share(
-            '${message.text.decodeString}\n\nResponse from Omi. Get yours at https://omi.me',
-            subject: 'Chat with Omi',
+            '${message.text.decodeString}\n\nResponse from Taya. Get yours at https://omi.me',
+            subject: 'Chat with Taya',
           );
           Navigator.pop(context);
         },
@@ -1623,7 +1623,7 @@ class DesktopChatPageState extends State<DesktopChatPage> with AutomaticKeepAliv
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        app?.name ?? 'Omi',
+                        app?.name ?? 'Taya',
                         style: const TextStyle(
                           color: ResponsiveHelper.textPrimary,
                           fontSize: 16,

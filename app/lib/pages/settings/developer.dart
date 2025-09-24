@@ -103,7 +103,7 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                               return;
                             }
                             if (files.length == 1) {
-                              final result = await Share.shareXFiles([XFile(files.first.path)], text: 'Omi debug log');
+                              final result = await Share.shareXFiles([XFile(files.first.path)], text: 'Taya debug log');
                               if (result.status == ShareResultStatus.success) {
                                 debugPrint('Log shared');
                               }
@@ -138,7 +138,7 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                             );
 
                             if (selected != null) {
-                              final result = await Share.shareXFiles([XFile(selected.path)], text: 'Omi debug log');
+                              final result = await Share.shareXFiles([XFile(selected.path)], text: 'Taya debug log');
                               if (result.status == ShareResultStatus.success) {
                                 debugPrint('Log shared');
                               }
@@ -264,7 +264,7 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                             await file.writeAsString(json);
 
                             final result =
-                                await Share.shareXFiles([XFile(file.path)], text: 'Exported Conversations from Omi');
+                                await Share.shareXFiles([XFile(file.path)], text: 'Exported Conversations from Taya');
                             if (result.status == ShareResultStatus.success) {
                               debugPrint('Thank you for sharing the picture!');
                             }
@@ -355,7 +355,7 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'To connect Omi with other applications to read, search, and manage your memories and conversations. Create a key to get started.',
+                    'To connect Taya with other applications to read, search, and manage your memories and conversations. Create a key to get started.',
                     style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
                   ),
                   const SizedBox(height: 16),
@@ -568,7 +568,7 @@ class _DeveloperSettingsPageState extends State<DeveloperSettingsPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Try the latest experimental features from Omi Team.',
+                    'Try the latest experimental features from Taya Team.',
                     style: TextStyle(color: Colors.grey.shade200, fontSize: 14),
                   ),
                   const SizedBox(height: 16.0),

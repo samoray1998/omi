@@ -197,7 +197,7 @@ class _FirmwareUpdateState extends State<FirmwareUpdate> with FirmwareMixin {
             ),
             const SizedBox(height: 8),
             Text(
-              'Please restart your ${widget.device?.name ?? "Omi device"} to complete the update',
+              'Please restart your ${widget.device?.name ?? "Taya device"} to complete the update',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

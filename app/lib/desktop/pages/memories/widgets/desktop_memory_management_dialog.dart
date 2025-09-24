@@ -262,7 +262,7 @@ class DesktopMemoryManagementDialog extends StatelessWidget {
         // Danger zone
         _buildActionItem(
           'Delete All Memories',
-          'Permanently remove all memories from Omi',
+          'Permanently remove all memories from Taya',
           () => _confirmDeleteAllMemories(context),
           isDangerous: true,
         ),
@@ -412,7 +412,7 @@ class DesktopMemoryManagementDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Clear Omi\'s Memory',
+                  'Clear Taya\'s Memory',
                   style: TextStyle(
                     color: ResponsiveHelper.textPrimary,
                     fontSize: 20,
@@ -421,7 +421,7 @@ class DesktopMemoryManagementDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Are you sure you want to clear Omi\'s memory? This action cannot be undone and will permanently delete all ${provider.memories.length} memories.',
+                  'Are you sure you want to clear Taya\'s memory? This action cannot be undone and will permanently delete all ${provider.memories.length} memories.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: ResponsiveHelper.textSecondary,
@@ -467,7 +467,7 @@ class DesktopMemoryManagementDialog extends StatelessWidget {
                             Navigator.pop(context); // Close confirmation dialog
                             Navigator.pop(context); // Close management dialog
                             _showSuccessMessage(
-                                context, 'Omi\'s memory about you has been cleared', FontAwesomeIcons.trash);
+                                context, 'Taya\'s memory about you has been cleared', FontAwesomeIcons.trash);
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Container(

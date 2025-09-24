@@ -18,7 +18,7 @@ class BatteryInfoWidget extends StatelessWidget {
       return Assets.images.omiGlass.path;
     }
 
-    if (deviceName != null && deviceName.contains('Omi DevKit')) {
+    if (deviceName != null && deviceName.contains('Taya DevKit')) {
       return Assets.images.omiDevkitWithoutRope.path;
     }
 

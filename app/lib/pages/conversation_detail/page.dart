@@ -16,6 +16,7 @@ import 'package:omi/providers/people_provider.dart';
 import 'package:omi/services/app_review_service.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/other/temp.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:omi/widgets/conversation_bottom_bar.dart';
 import 'package:omi/widgets/dialog.dart';
 import 'package:omi/widgets/expandable_text.dart';
@@ -36,8 +37,9 @@ import 'package:omi/backend/http/webhooks.dart';
 class ConversationDetailPage extends StatefulWidget {
   final ServerConversation conversation;
   final bool isFromOnboarding;
+  final String? title;
 
-  const ConversationDetailPage({super.key, this.isFromOnboarding = false, required this.conversation});
+  const ConversationDetailPage({super.key, this.isFromOnboarding = false, required this.conversation, this.title});
 
   @override
   State<ConversationDetailPage> createState() => _ConversationDetailPageState();
@@ -202,7 +204,7 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
       case ConversationTab.transcript:
         return 'Transcript';
       case ConversationTab.summary:
-        return 'Conversation';
+        return widget.title ?? "Converstation";
       case ConversationTab.actionItems:
         return 'Action Items';
     }
@@ -300,10 +302,10 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
         child: Scaffold(
           key: scaffoldKey,
           extendBody: true,
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: Colors.white,
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: Colors.white,
             leading: Container(
               width: 36,
               height: 36,
@@ -325,7 +327,7 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
                     Navigator.pop(context);
                   }
                 },
-                icon: const FaIcon(FontAwesomeIcons.arrowLeft, size: 16.0, color: Colors.white),
+                icon: FaIcon(FontAwesomeIcons.arrowLeft, size: 16.0, color: TayaColors.secondaryTextColor),
               ),
             ),
             title: Align(
@@ -334,8 +336,8 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   _getTabTitle(selectedTab),
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: TayaColors.secondaryTextColor,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -351,89 +353,90 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Share button (first) - directly share summary link
-                      Container(
-                        width: 36,
-                        height: 36,
-                        margin: const EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.3),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: _isSharing
-                              ? null
-                              : () async {
-                                  setState(() {
-                                    _isSharing = true;
-                                  });
-                                  HapticFeedback.mediumImpact();
-                                  try {
-                                    // Directly share the summary link
-                                    bool shared = await setConversationVisibility(provider.conversation.id);
-                                    if (!shared) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Conversation URL could not be shared.')),
-                                      );
-                                      setState(() {
-                                        _isSharing = false;
-                                      });
-                                      return;
-                                    }
-                                    String content = 'https://h.omi.me/memories/${provider.conversation.id}';
-                                    // Start sharing and immediately clear loading state
-                                    Share.share(content);
-                                    // Small delay to let share sheet appear, then clear loading
-                                    await Future.delayed(const Duration(milliseconds: 150));
-                                    setState(() {
-                                      _isSharing = false;
-                                    });
-                                  } catch (e) {
-                                    setState(() {
-                                      _isSharing = false;
-                                    });
-                                  }
-                                },
-                          icon: _isSharing
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : const FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16.0, color: Colors.white),
-                        ),
-                      ),
+                      // Container(
+                      //   width: 36,
+                      //   height: 36,
+                      //   margin: const EdgeInsets.only(right: 8),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.grey.withOpacity(0.3),
+                      //     shape: BoxShape.circle,
+                      //   ),
+                      //   child: IconButton(
+                      //     padding: EdgeInsets.zero,
+                      //     onPressed: _isSharing
+                      //         ? null
+                      //         : () async {
+                      //             setState(() {
+                      //               _isSharing = true;
+                      //             });
+                      //             HapticFeedback.mediumImpact();
+                      //             try {
+                      //               // Directly share the summary link
+                      //               bool shared = await setConversationVisibility(provider.conversation.id);
+                      //               if (!shared) {
+                      //                 ScaffoldMessenger.of(context).showSnackBar(
+                      //                   const SnackBar(content: Text('Conversation URL could not be shared.')),
+                      //                 );
+                      //                 setState(() {
+                      //                   _isSharing = false;
+                      //                 });
+                      //                 return;
+                      //               }
+                      //               String content = 'https://h.omi.me/memories/${provider.conversation.id}';
+                      //               // Start sharing and immediately clear loading state
+                      //               Share.share(content);
+                      //               // Small delay to let share sheet appear, then clear loading
+                      //               await Future.delayed(const Duration(milliseconds: 150));
+                      //               setState(() {
+                      //                 _isSharing = false;
+                      //               });
+                      //             } catch (e) {
+                      //               setState(() {
+                      //                 _isSharing = false;
+                      //               });
+                      //             }
+                      //           },
+                      //     icon: _isSharing
+                      //         ? const SizedBox(
+                      //             width: 16,
+                      //             height: 16,
+                      //             child: CircularProgressIndicator(
+                      //               strokeWidth: 2,
+                      //               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      //             ),
+                      //           )
+                      //         : const FaIcon(FontAwesomeIcons.arrowUpFromBracket, size: 16.0, color: Colors.white),
+                      //   ),
+                      // ),
                       // Search button (second) - only show on transcript and summary tabs
-                      if (_controller?.index != 2)
-                        Container(
-                          width: 36,
-                          height: 36,
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: _isSearching ? Colors.deepPurple.withOpacity(0.8) : Colors.grey.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              setState(() {
-                                _isSearching = !_isSearching;
-                                if (!_isSearching) {
-                                  _searchQuery = '';
-                                  _searchController.clear();
-                                  _searchFocusNode.unfocus();
-                                } else {
-                                  _searchFocusNode.requestFocus();
-                                }
-                              });
-                              HapticFeedback.mediumImpact();
-                            },
-                            icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 16.0, color: Colors.white),
-                          ),
-                        ),
+                      // if (_controller?.index != 2)
+                      //   Container(
+                      //     width: 36,
+                      //     height: 36,
+                      //     margin: const EdgeInsets.only(right: 8),
+                      //     decoration: BoxDecoration(
+                      //       color: _isSearching ? Colors.deepPurple.withOpacity(0.8) : Colors.grey.withOpacity(0.3),
+                      //       shape: BoxShape.circle,
+                      //     ),
+                      //     child: IconButton(
+                      //       padding: EdgeInsets.zero,
+                      //       onPressed: () {
+                      //         setState(() {
+                      //           _isSearching = !_isSearching;
+                      //           if (!_isSearching) {
+                      //             _searchQuery = '';
+                      //             _searchController.clear();
+                      //             _searchFocusNode.unfocus();
+                      //           } else {
+                      //             _searchFocusNode.requestFocus();
+                      //           }
+                      //         });
+                      //         HapticFeedback.mediumImpact();
+                      //       },
+                      //       icon: const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 16.0, color: Colors.white),
+                      //     ),
+                      //   ),
+
                       // Developer Tools button (third) - iOS style pull-down menu
                       Container(
                         width: 36,
@@ -496,64 +499,65 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
                                 color: Colors.grey.withOpacity(0.3),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Center(
-                                child: FaIcon(FontAwesomeIcons.ellipsisVertical, size: 16.0, color: Colors.white),
+                              child: Center(
+                                child:
+                                    FaIcon(FontAwesomeIcons.ellipsis, size: 16.0, color: TayaColors.secondaryTextColor),
                               ),
                             ),
                           ),
                         ),
                       ),
                       // Delete button (third)
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.3),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: provider.loadingReprocessConversation
-                              ? null
-                              : () {
-                                  HapticFeedback.mediumImpact();
-                                  final connectivityProvider =
-                                      Provider.of<ConnectivityProvider>(context, listen: false);
-                                  if (connectivityProvider.isConnected) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (c) => getDialog(
-                                        context,
-                                        () => Navigator.pop(context),
-                                        () {
-                                          context
-                                              .read<ConversationProvider>()
-                                              .deleteConversation(provider.conversation, provider.conversationIdx);
-                                          Navigator.pop(context); // Close dialog
-                                          Navigator.pop(context, {'deleted': true}); // Close detail page
-                                        },
-                                        'Delete Conversation?',
-                                        'Are you sure you want to delete this conversation? This action cannot be undone.',
-                                        okButtonText: 'Confirm',
-                                      ),
-                                    );
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (c) => getDialog(
-                                          context,
-                                          () => Navigator.pop(context),
-                                          () => Navigator.pop(context),
-                                          'Unable to Delete Conversation',
-                                          'Please check your internet connection and try again.',
-                                          singleButton: true,
-                                          okButtonText: 'OK'),
-                                    );
-                                  }
-                                },
-                          icon: const FaIcon(FontAwesomeIcons.trashCan, size: 16.0, color: Colors.white),
-                        ),
-                      ),
+                      // Container(
+                      //   width: 36,
+                      //   height: 36,
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.grey.withOpacity(0.3),
+                      //     shape: BoxShape.circle,
+                      //   ),
+                      //   child: IconButton(
+                      //     padding: EdgeInsets.zero,
+                      //     onPressed: provider.loadingReprocessConversation
+                      //         ? null
+                      //         : () {
+                      //             HapticFeedback.mediumImpact();
+                      //             final connectivityProvider =
+                      //                 Provider.of<ConnectivityProvider>(context, listen: false);
+                      //             if (connectivityProvider.isConnected) {
+                      //               showDialog(
+                      //                 context: context,
+                      //                 builder: (c) => getDialog(
+                      //                   context,
+                      //                   () => Navigator.pop(context),
+                      //                   () {
+                      //                     context
+                      //                         .read<ConversationProvider>()
+                      //                         .deleteConversation(provider.conversation, provider.conversationIdx);
+                      //                     Navigator.pop(context); // Close dialog
+                      //                     Navigator.pop(context, {'deleted': true}); // Close detail page
+                      //                   },
+                      //                   'Delete Conversation?',
+                      //                   'Are you sure you want to delete this conversation? This action cannot be undone.',
+                      //                   okButtonText: 'Confirm',
+                      //                 ),
+                      //               );
+                      //             } else {
+                      //               showDialog(
+                      //                 context: context,
+                      //                 builder: (c) => getDialog(
+                      //                     context,
+                      //                     () => Navigator.pop(context),
+                      //                     () => Navigator.pop(context),
+                      //                     'Unable to Delete Conversation',
+                      //                     'Please check your internet connection and try again.',
+                      //                     singleButton: true,
+                      //                     okButtonText: 'OK'),
+                      //               );
+                      //             }
+                      //           },
+                      //     icon: const FaIcon(FontAwesomeIcons.trashCan, size: 16.0, color: Colors.white),
+                      //   ),
+                      // ),
                     ],
                   ),
                 );
@@ -939,7 +943,7 @@ class SummaryTab extends StatelessWidget {
                   ListView(
                     shrinkWrap: true,
                     children: [
-                      const GetSummaryWidgets(),
+                      GetSummaryWidgets(),
                       data.item1
                           ? const ReprocessDiscardedWidget()
                           : GetAppsWidgets(searchQuery: searchQuery, currentResultIndex: currentResultIndex),

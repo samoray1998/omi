@@ -192,7 +192,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
   }
 
   Future<void> _copyVersionInfo() async {
-    final versionPart = buildVersion != null ? 'Omi AI ${version ?? ""} ($buildVersion)' : 'Omi AI ${version ?? ""}';
+    final versionPart = buildVersion != null ? 'Taya AI ${version ?? ""} ($buildVersion)' : 'Taya AI ${version ?? ""}';
     final devicePart = shortDeviceInfo ?? 'Unknown Device';
     final fullVersionInfo = '$versionPart — $devicePart';
 
@@ -311,7 +311,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
             children: [
               if (PlatformService.isIOS)
                 _buildSettingsItem(
-                  title: 'Share Omi for iPhone',
+                  title: 'Share Taya for iPhone',
                   icon: const FaIcon(FontAwesomeIcons.solidShareFromSquare, color: Colors.white, size: 20),
                   onTap: () async {
                     Navigator.pop(context);
@@ -320,7 +320,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                 ),
               if (PlatformService.isAndroid)
                 _buildSettingsItem(
-                  title: 'Share Omi for Android',
+                  title: 'Share Taya for Android',
                   icon: const FaIcon(FontAwesomeIcons.googlePlay, color: Color(0xFF8E8E93), size: 20),
                   onTap: () async {
                     Navigator.pop(context);

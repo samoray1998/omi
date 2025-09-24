@@ -36,7 +36,7 @@ class _FoundDevicesState extends State<FoundDevices> {
     if (deviceName.contains('Glass')) {
       return Assets.images.omiGlass.path;
     }
-    if (deviceName.contains('Omi DevKit')) {
+    if (deviceName.contains('Taya DevKit')) {
       return Assets.images.omiDevkitWithoutRope.path;
     }
     return Assets.images.omiWithoutRope.path;

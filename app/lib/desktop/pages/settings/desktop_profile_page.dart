@@ -284,7 +284,7 @@ class _DesktopProfilePageState extends State<DesktopProfilePage> with TickerProv
               ),
               OmiSettingsTile(
                 title: 'Persona',
-                subtitle: 'Manage your Omi persona',
+                subtitle: 'Manage your Taya persona',
                 icon: FontAwesomeIcons.userGear,
                 onTap: () {
                   Navigator.of(context).push(
@@ -308,7 +308,7 @@ class _DesktopProfilePageState extends State<DesktopProfilePage> with TickerProv
             children: [
               OmiSettingsTile(
                 title: 'Speech Profile',
-                subtitle: 'Teach Omi your voice',
+                subtitle: 'Teach Taya your voice',
                 icon: FontAwesomeIcons.waveSquare,
                 onTap: () {
                   routeToPage(context, const SpeechProfilePage());
@@ -317,7 +317,7 @@ class _DesktopProfilePageState extends State<DesktopProfilePage> with TickerProv
               ),
               OmiSettingsTile(
                 title: 'Identifying Others',
-                subtitle: 'Tell Omi who said it 🗣️',
+                subtitle: 'Tell Taya who said it 🗣️',
                 icon: FontAwesomeIcons.users,
                 onTap: () {
                   routeToPage(context, const UserPeoplePage());
@@ -352,7 +352,7 @@ class _DesktopProfilePageState extends State<DesktopProfilePage> with TickerProv
             icon: FontAwesomeIcons.sliders,
             children: [
               _buildPreferenceTile(
-                title: 'Help improve Omi by sharing anonymized analytics data',
+                title: 'Help improve Taya by sharing anonymized analytics data',
                 value: SharedPreferencesUtil().optInAnalytics,
                 onChanged: (value) {
                   setState(() {

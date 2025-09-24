@@ -127,7 +127,7 @@ class AppleRemindersService {
     // Add the reminder
     final success = await addReminder(
       title: actionItemDescription,
-      notes: 'From Omi',
+      notes: 'From Taya',
       listName: 'Reminders',
     );
 

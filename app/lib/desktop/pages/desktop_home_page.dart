@@ -1056,7 +1056,7 @@ class _DesktopHomePageState extends State<DesktopHomePage> with WidgetsBindingOb
         _buildPopupMenuItem('profile', Icons.person, 'Profile', profileCardWidth),
         _buildPopupMenuItem('device', Icons.bluetooth_connected, 'Device Settings', profileCardWidth),
         _buildPopupMenuItem('developer', Icons.code, 'Developer Mode', profileCardWidth),
-        _buildPopupMenuItem('about', Icons.info_outline, 'About Omi', profileCardWidth),
+        _buildPopupMenuItem('about', Icons.info_outline, 'About Taya', profileCardWidth),
 
         // Divider before sign out
         PopupMenuItem<String>(

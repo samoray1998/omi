@@ -718,7 +718,7 @@ class _PlansSheetState extends State<PlansSheet> {
                                   return Text(
                                     isUnlimited
                                         ? 'You are on the Unlimited Plan.'
-                                        : 'Your Omi, unleashed. Go unlimited for endless possibilities.',
+                                        : 'Your Taya, unleashed. Go unlimited for endless possibilities.',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 14, color: Colors.grey.shade400),
                                   );
@@ -764,12 +764,12 @@ class _PlansSheetState extends State<PlansSheet> {
                                   const SizedBox(height: 16),
                                   _buildFeatureItem(
                                     faIcon: FontAwesomeIcons.solidComments,
-                                    text: 'Ask Omi anything about your life',
+                                    text: 'Ask Taya anything about your life',
                                   ),
                                   const SizedBox(height: 16),
                                   _buildFeatureItem(
                                     faIcon: FontAwesomeIcons.brain,
-                                    text: 'Unlock Omi\'s infinite memory',
+                                    text: 'Unlock Taya\'s infinite memory',
                                   ),
                                 ],
                               ),

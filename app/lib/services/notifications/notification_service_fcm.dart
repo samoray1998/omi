@@ -30,7 +30,7 @@ class _FCMNotificationService implements NotificationInterface {
     channelGroupKey: 'channel_group_key',
     channelKey: 'channel',
     channelName: 'Omi Notifications',
-    channelDescription: 'Notification channel for Omi',
+    channelDescription: 'Notification channel for Taya',
     defaultColor: const Color(0xFF9D50DD),
     ledColor: Colors.white,
   );
@@ -112,8 +112,8 @@ class _FCMNotificationService implements NotificationInterface {
       await platform.invokeMethod(
         'setNotificationOnKillService',
         {
-          'title': "Your Omi Device Disconnected",
-          'description': "Please keep your app opened to continue using your Omi.",
+          'title': "Your Taya Device Disconnected",
+          'description': "Please keep your app opened to continue using your Taya.",
         },
       );
     } catch (e) {

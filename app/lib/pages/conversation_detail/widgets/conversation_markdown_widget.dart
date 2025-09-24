@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:omi/utils/styles.dart';
 
 class ConversationMarkdownWidget extends StatefulWidget {
   final String content;
@@ -195,7 +196,7 @@ class _ConversationMarkdownWidgetState extends State<ConversationMarkdownWidget>
   // Custom markdown widget with search functionality
   Widget _getMarkdownWidgetWithSearch(BuildContext context, String content,
       {String searchQuery = '', int currentResultIndex = -1}) {
-    var style = TextStyle(color: Colors.white, fontSize: 16, height: 1.5);
+    var style = TextStyle(color: TayaColors.secondaryTextColor, fontSize: 16, height: 1.5);
 
     String processedContent = content;
 

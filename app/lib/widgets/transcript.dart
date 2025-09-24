@@ -682,7 +682,7 @@ class _TranscriptWidgetState extends State<TranscriptWidget> {
             return AlertDialog(
               title: const Text('Translation Notice'),
               content: const Text(
-                'Omi translates conversations into your primary language. Update it anytime in Settings →  Profiles.',
+                'Taya translates conversations into your primary language. Update it anytime in Settings →  Profiles.',
                 style: TextStyle(fontSize: 14),
               ),
               actions: [

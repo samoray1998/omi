@@ -237,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const Divider(height: 1, color: Color(0xFF3C3C43)),
                 _buildProfileItem(
                   title: 'Persona',
-                  subtitle: 'Manage your Omi persona',
+                  subtitle: 'Manage your Taya persona',
                   icon: const FaIcon(FontAwesomeIcons.solidCircleUser, color: Color(0xFF8E8E93), size: 20),
                   onTap: () {
                     Navigator.of(context).push(
@@ -260,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 _buildProfileItem(
                   title: 'Speech Profile',
-                  subtitle: 'Teach Omi your voice',
+                  subtitle: 'Teach Taya your voice',
                   icon: const FaIcon(FontAwesomeIcons.microphone, color: Color(0xFF8E8E93), size: 20),
                   onTap: () {
                     routeToPage(context, const SpeechProfilePage());
@@ -270,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const Divider(height: 1, color: Color(0xFF3C3C43)),
                 _buildProfileItem(
                   title: 'Identifying Others',
-                  subtitle: 'Tell Omi who said it 🗣️',
+                  subtitle: 'Tell Taya who said it 🗣️',
                   icon: const FaIcon(FontAwesomeIcons.users, color: Color(0xFF8E8E93), size: 20),
                   onTap: () {
                     routeToPage(context, const UserPeoplePage());
@@ -306,7 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // PREFERENCES SECTION
             _buildPreferenceToggle(
-              title: 'Help improve Omi by sharing anonymized analytics data',
+              title: 'Help improve Taya by sharing anonymized analytics data',
               value: SharedPreferencesUtil().optInAnalytics,
               onChanged: (value) {
                 setState(() {

@@ -53,7 +53,7 @@ class _DesktopAuthScreenState extends State<DesktopAuthScreen> {
                   SizedBox(height: responsive.spacing(baseSpacing: 32)),
 
                   Text(
-                    'Welcome to Omi',
+                    'Welcome to Taya',
                     style: responsive.headlineLarge.copyWith(
                       fontWeight: FontWeight.w700,
                     ),

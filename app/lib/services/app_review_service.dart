@@ -135,7 +135,7 @@ class AppReviewService {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Loving Omi?',
+                  'Loving Taya?',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,

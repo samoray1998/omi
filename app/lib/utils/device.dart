@@ -36,7 +36,7 @@ class DeviceUtils {
             latestVersionStr
           );
         } else {
-          return ('A new version is available! Update your Omi now.', true, latestVersionStr);
+          return ('A new version is available! Update your Taya now.', true, latestVersionStr);
         }
       } else {
         return ('You are already on the latest version', false, latestVersionStr);

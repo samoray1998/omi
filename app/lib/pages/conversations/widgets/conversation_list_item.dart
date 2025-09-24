@@ -81,7 +81,11 @@ class _ConversationListItemState extends State<ConversationListItem> {
 
           await routeToPage(
             context,
-            ConversationDetailPage(conversation: widget.conversation, isFromOnboarding: widget.isFromOnboarding),
+            ConversationDetailPage(
+              conversation: widget.conversation,
+              isFromOnboarding: widget.isFromOnboarding,
+              title: widget.conversation.structured.title,
+            ),
           );
           if (mounted) {
             String newTitle = context.read<ConversationDetailProvider>().conversation.structured.title;

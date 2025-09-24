@@ -276,7 +276,7 @@ class SDCardWalSync implements IWalSync {
       // Device model
       var connection = await ServiceManager.instance().device.ensureConnection(deviceId);
       var pd = await _device!.getDeviceInfo(connection);
-      String deviceModel = pd.modelNumber.isNotEmpty ? pd.modelNumber : "Omi";
+      String deviceModel = pd.modelNumber.isNotEmpty ? pd.modelNumber : "Taya";
 
       wals.add(Wal(
         codec: codec,
@@ -771,8 +771,8 @@ class LocalWalSync implements IWalSync {
           data: chunk,
           storage: WalStorage.mem,
           status: syncedOffset == chunkFrameCount ? WalStatus.synced : WalStatus.miss,
-          device: _deviceId ?? "omi",
-          deviceModel: _deviceModel ?? "Omi",
+          device: _deviceId ?? "Taya",
+          deviceModel: _deviceModel ?? "Taya",
           seconds: chunkFrameCount ~/ _framesPerSecond,
           totalFrames: chunkFrameCount,
           syncedFrameOffset: syncedOffset,

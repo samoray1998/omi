@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:omi/utils/styles.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -75,13 +76,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           isSelected: widget.selectedIndex == 0,
                         ),
                         _buildNavItem(
-                          icon: Icons.edit_outlined,
+                          icon: FontAwesomeIcons.featherPointed,
                           label: 'Journal',
                           index: 1,
                           isSelected: widget.selectedIndex == 1,
                         ),
                         _buildNavItem(
-                          icon: Icons.refresh,
+                          icon: FontAwesomeIcons.clockRotateLeft,
                           label: 'Memories',
                           index: 2,
                           isSelected: widget.selectedIndex == 2,
@@ -148,7 +149,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           shape: BoxShape.circle,
         ),
         child: const Icon(
-          Icons.quickreply_outlined,
+          FontAwesomeIcons.comments,
           color: Colors.white,
           size: 25,
         ),

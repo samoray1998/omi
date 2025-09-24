@@ -155,7 +155,7 @@ class _AppsList extends StatelessWidget {
           isSelected: currentAppId == null,
           onTap: () => _handleAutoAppTap(context),
           trailingIcon: const Icon(Icons.autorenew, color: Colors.white, size: 20),
-          subtitle: 'Let Omi automatically choose the best app for this summary.',
+          subtitle: 'Let Taya automatically choose the best app for this summary.',
           provider: provider,
         ),
 

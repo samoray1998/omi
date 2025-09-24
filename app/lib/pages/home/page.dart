@@ -196,7 +196,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
       // ActionItemsPage(key: _actionItemsPageKey),
       const JournalEditorScreen(),
       MemoriesPage(key: _memoriesPageKey),
-      AppsPage(key: _appsPageKey),
+      // AppsPage(key: _appsPageKey),
+      Container(
+        color: Colors.white,
+        child: Center(
+          child: Text(
+            "Comming soon !!!",
+            style: TextStyle(color: TayaColors.secondaryTextColor),
+          ),
+        ),
+      )
     ];
     SharedPreferencesUtil().onboardingCompleted = true;
 

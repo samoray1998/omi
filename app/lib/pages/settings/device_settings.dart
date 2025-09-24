@@ -211,7 +211,7 @@ class _DeviceSettingsState extends State<DeviceSettings> {
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
-                            Text('Your Omi is ${provider.connectedDevice == null ? "unpaired" : "disconnected"}  😔'),
+                            Text('Your Taya is ${provider.connectedDevice == null ? "unpaired" : "disconnected"}  😔'),
                       ));
                       MixpanelManager().disconnectFriendClicked();
                     },
@@ -274,7 +274,7 @@ List<Widget> deviceSettingsWidgets(BtDevice? device, BuildContext context) {
   return [
     ListTile(
       title: const Text('Device Name'),
-      subtitle: Text(device?.name ?? 'Omi DevKit'),
+      subtitle: Text(device?.name ?? 'Taya DevKit'),
     ),
     ListTile(
       title: const Text('Device ID'),
@@ -327,7 +327,7 @@ List<Widget> deviceSettingsWidgets(BtDevice? device, BuildContext context) {
     ),
     ListTile(
       title: const Text('Model Number'),
-      subtitle: Text(device?.modelNumber ?? 'Omi DevKit'),
+      subtitle: Text(device?.modelNumber ?? 'Taya DevKit'),
     ),
     ListTile(
       title: const Text('Manufacturer Name'),
