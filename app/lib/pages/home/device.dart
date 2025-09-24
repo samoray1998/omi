@@ -150,235 +150,236 @@ class _ConnectedDeviceState extends State<ConnectedDevice> {
         body: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: 0),
-                  // Device Title and Status
-                  Column(
-                    children: [
-                      Text(
-                        provider.pairedDevice?.name ?? 'Unknown Device',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: provider.connectedDevice != null
-                              ? Colors.green.withValues(alpha: 0.2)
-                              : Colors.grey.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: provider.connectedDevice != null ? Colors.green : Colors.grey,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              provider.connectedDevice != null ? 'Connected' : 'Offline',
-                              style: TextStyle(
-                                color: provider.connectedDevice != null ? Colors.green : Colors.grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  DeviceAnimationWidget(
-                    isConnected: provider.connectedDevice != null,
-                    deviceName: provider.connectedDevice?.name ?? provider.pairedDevice?.name,
-                    animatedBackground: provider.connectedDevice != null,
-                  ),
+            // SliverToBoxAdapter(
+            //   child: Column(
+            //     children: [
+            //       const SizedBox(height: 0),
+            //       // Device Title and Status
+            //       Column(
+            //         children: [
+            //           Text(
+            //             provider.pairedDevice?.name ?? 'Unknown Device',
+            //             style: const TextStyle(
+            //               color: Colors.white,
+            //               fontSize: 32,
+            //               fontWeight: FontWeight.bold,
+            //             ),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //           const SizedBox(height: 12),
+            //           Container(
+            //             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            //             decoration: BoxDecoration(
+            //               color: provider.connectedDevice != null
+            //                   ? Colors.green.withValues(alpha: 0.2)
+            //                   : Colors.grey.withValues(alpha: 0.2),
+            //               borderRadius: BorderRadius.circular(20),
+            //             ),
+            //             child: Row(
+            //               mainAxisSize: MainAxisSize.min,
+            //               children: [
+            //                 Container(
+            //                   width: 6,
+            //                   height: 6,
+            //                   decoration: BoxDecoration(
+            //                     color: provider.connectedDevice != null ? Colors.green : Colors.grey,
+            //                     shape: BoxShape.circle,
+            //                   ),
+            //                 ),
+            //                 const SizedBox(width: 6),
+            //                 Text(
+            //                   provider.connectedDevice != null ? 'Connected' : 'Offline',
+            //                   style: TextStyle(
+            //                     color: provider.connectedDevice != null ? Colors.green : Colors.grey,
+            //                     fontSize: 14,
+            //                     fontWeight: FontWeight.w500,
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //       const SizedBox(height: 32),
+            //       DeviceAnimationWidget(
+            //         isConnected: provider.connectedDevice != null,
+            //         deviceName: provider.connectedDevice?.name ?? provider.pairedDevice?.name,
+            //         animatedBackground: provider.connectedDevice != null,
+            //       ),
 
-                  const SizedBox(height: 8),
-                  // Device Details Section
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Battery Level Section
-                        if (provider.connectedDevice != null)
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1F1F25),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              children: [
-                                FaIcon(
-                                  _getBatteryIcon(provider.batteryLevel),
-                                  color: provider.batteryLevel > 75
-                                      ? const Color.fromARGB(255, 0, 255, 8)
-                                      : provider.batteryLevel > 20
-                                          ? Colors.yellow.shade700
-                                          : Colors.red,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 12),
-                                const Text(
-                                  'Battery Level',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  '${provider.batteryLevel}%',
-                                  style: const TextStyle(
-                                    color: Colors.white54,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        if (provider.connectedDevice != null) const SizedBox(height: 20),
+            //       const SizedBox(height: 8),
+            //       // Device Details Section
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(horizontal: 24),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             // Battery Level Section
+            //             if (provider.connectedDevice != null)
+            //               Container(
+            //                 width: double.infinity,
+            //                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            //                 decoration: BoxDecoration(
+            //                   color: const Color(0xFF1F1F25),
+            //                   borderRadius: BorderRadius.circular(16),
+            //                 ),
+            //                 child: Row(
+            //                   children: [
+            //                     FaIcon(
+            //                       _getBatteryIcon(provider.batteryLevel),
+            //                       color: provider.batteryLevel > 75
+            //                           ? const Color.fromARGB(255, 0, 255, 8)
+            //                           : provider.batteryLevel > 20
+            //                               ? Colors.yellow.shade700
+            //                               : Colors.red,
+            //                       size: 20,
+            //                     ),
+            //                     const SizedBox(width: 12),
+            //                     const Text(
+            //                       'Battery Level',
+            //                       style: TextStyle(
+            //                         color: Colors.white,
+            //                         fontSize: 16,
+            //                         fontWeight: FontWeight.w500,
+            //                       ),
+            //                     ),
+            //                     const Spacer(),
+            //                     Text(
+            //                       '${provider.batteryLevel}%',
+            //                       style: const TextStyle(
+            //                         color: Colors.white54,
+            //                         fontSize: 16,
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //             if (provider.connectedDevice != null) const SizedBox(height: 20),
 
-                        // Controllable Items Section
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1F1F25),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            children: [
-                              _buildSectionRow(
-                                'Product Update',
-                                provider.connectedDevice == null ? 'Device must be connected' : '',
-                                hasArrow: provider.connectedDevice != null,
-                                isFirst: true,
-                                onTap: provider.connectedDevice != null
-                                    ? () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => FirmwareUpdate(device: provider.pairedDevice),
-                                          ),
-                                        );
-                                      }
-                                    : null,
-                              ),
-                              if (provider.isDeviceStorageSupport)
-                                _buildSectionRow(
-                                  'SD Card Sync',
-                                  'Import audio files from SD Card',
-                                  hasArrow: true,
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const SyncPage(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              _buildSectionRow(
-                                'Issues charging the device?',
-                                'Tap to see the guide',
-                                hasArrow: true,
-                                onTap: () async {
-                                  await IntercomManager.instance
-                                      .displayChargingArticle(provider.pairedDevice?.name ?? 'DevKit1');
-                                },
-                              ),
-                              _buildSectionRow(
-                                provider.connectedDevice == null ? 'Unpair' : 'Disconnect',
-                                '',
-                                hasArrow: true,
-                                isLast: true,
-                                isRedBackground: true,
-                                onTap: () async {
-                                  await SharedPreferencesUtil()
-                                      .btDeviceSet(BtDevice(id: '', name: '', type: DeviceType.omi, rssi: 0));
-                                  SharedPreferencesUtil().deviceName = '';
-                                  if (provider.connectedDevice != null) {
-                                    await _bleDisconnectDevice(provider.connectedDevice!);
-                                  }
-                                  if (context.mounted) {
-                                    context.read<DeviceProvider>().setIsConnected(false);
-                                    context.read<DeviceProvider>().setConnectedDevice(null);
-                                    context.read<DeviceProvider>().updateConnectingStatus(false);
-                                    Navigator.of(context).pop();
-                                  }
-                                  MixpanelManager().disconnectFriendClicked();
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
+            //             // Controllable Items Section
+            //             Container(
+            //               decoration: BoxDecoration(
+            //                 color: const Color(0xFF1F1F25),
+            //                 borderRadius: BorderRadius.circular(16),
+            //               ),
+            //               child: Column(
+            //                 children: [
+            //                   _buildSectionRow(
+            //                     'Product Update',
+            //                     provider.connectedDevice == null ? 'Device must be connected' : '',
+            //                     hasArrow: provider.connectedDevice != null,
+            //                     isFirst: true,
+            //                     onTap: provider.connectedDevice != null
+            //                         ? () {
+            //                             Navigator.of(context).push(
+            //                               MaterialPageRoute(
+            //                                 builder: (context) => FirmwareUpdate(device: provider.pairedDevice),
+            //                               ),
+            //                             );
+            //                           }
+            //                         : null,
+            //                   ),
+            //                   if (provider.isDeviceStorageSupport)
+            //                     _buildSectionRow(
+            //                       'SD Card Sync',
+            //                       'Import audio files from SD Card',
+            //                       hasArrow: true,
+            //                       onTap: () {
+            //                         Navigator.of(context).push(
+            //                           MaterialPageRoute(
+            //                             builder: (context) => const SyncPage(),
+            //                           ),
+            //                         );
+            //                       },
+            //                     ),
+            //                   _buildSectionRow(
+            //                     'Issues charging the device?',
+            //                     'Tap to see the guide',
+            //                     hasArrow: true,
+            //                     onTap: () async {
+            //                       await IntercomManager.instance
+            //                           .displayChargingArticle(provider.pairedDevice?.name ?? 'DevKit1');
+            //                     },
+            //                   ),
+            //                   _buildSectionRow(
+            //                     provider.connectedDevice == null ? 'Unpair' : 'Disconnect',
+            //                     '',
+            //                     hasArrow: true,
+            //                     isLast: true,
+            //                     isRedBackground: true,
+            //                     onTap: () async {
+            //                       await SharedPreferencesUtil()
+            //                           .btDeviceSet(BtDevice(id: '', name: '', type: DeviceType.omi, rssi: 0));
+            //                       SharedPreferencesUtil().deviceName = '';
+            //                       if (provider.connectedDevice != null) {
+            //                         await _bleDisconnectDevice(provider.connectedDevice!);
+            //                       }
+            //                       if (context.mounted) {
+            //                         context.read<DeviceProvider>().setIsConnected(false);
+            //                         context.read<DeviceProvider>().setConnectedDevice(null);
+            //                         context.read<DeviceProvider>().updateConnectingStatus(false);
+            //                         Navigator.of(context).pop();
+            //                       }
+            //                       MixpanelManager().disconnectFriendClicked();
+            //                     },
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //             const SizedBox(height: 20),
 
-                        // Info Only Section
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1F1F25),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            children: [
-                              _buildSectionRow(
-                                'Product Name',
-                                provider.pairedDevice?.name ?? 'Unknown Device',
-                                hasArrow: false,
-                                isFirst: true,
-                              ),
-                              _buildSectionRow(
-                                'Model Number',
-                                provider.pairedDevice?.modelNumber ?? 'Unknown',
-                                hasArrow: false,
-                              ),
-                              _buildSectionRow(
-                                'Manufacturer Name',
-                                provider.pairedDevice?.manufacturerName ?? 'Unknown',
-                                hasArrow: false,
-                              ),
-                              _buildSectionRow(
-                                'Firmware Version',
-                                provider.pairedDevice?.firmwareRevision ?? 'Unknown',
-                                hasArrow: false,
-                              ),
-                              _buildSectionRow(
-                                'Device ID',
-                                provider.pairedDevice?.id ?? 'Unknown',
-                                hasArrow: false,
-                              ),
-                              _buildSectionRow(
-                                'Serial Number',
-                                provider.pairedDevice?.id.replaceAll(':', '').replaceAll('-', '').toUpperCase() ??
-                                    'Unknown',
-                                hasArrow: false,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            //             // Info Only Section
+            //             Container(
+            //               decoration: BoxDecoration(
+            //                 color: const Color(0xFF1F1F25),
+            //                 borderRadius: BorderRadius.circular(16),
+            //               ),
+            //               child: Column(
+            //                 children: [
+            //                   _buildSectionRow(
+            //                     'Product Name',
+            //                     provider.pairedDevice?.name ?? 'Unknown Device',
+            //                     hasArrow: false,
+            //                     isFirst: true,
+            //                   ),
+            //                   _buildSectionRow(
+            //                     'Model Number',
+            //                     provider.pairedDevice?.modelNumber ?? 'Unknown',
+            //                     hasArrow: false,
+            //                   ),
+            //                   _buildSectionRow(
+            //                     'Manufacturer Name',
+            //                     provider.pairedDevice?.manufacturerName ?? 'Unknown',
+            //                     hasArrow: false,
+            //                   ),
+            //                   _buildSectionRow(
+            //                     'Firmware Version',
+            //                     provider.pairedDevice?.firmwareRevision ?? 'Unknown',
+            //                     hasArrow: false,
+            //                   ),
+            //                   _buildSectionRow(
+            //                     'Device ID',
+            //                     provider.pairedDevice?.id ?? 'Unknown',
+            //                     hasArrow: false,
+            //                   ),
+            //                   _buildSectionRow(
+            //                     'Serial Number',
+            //                     provider.pairedDevice?.id.replaceAll(':', '').replaceAll('-', '').toUpperCase() ??
+            //                         'Unknown',
+            //                     hasArrow: false,
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
 
-                  const SizedBox(height: 64), // Extra padding to ensure scrollable content
-                ],
-              ),
-            ),
+            //       const SizedBox(height: 64), // Extra padding to ensure scrollable content
+            //     ],
+            //   ),
+            // ),
+         
           ],
         ),
       );

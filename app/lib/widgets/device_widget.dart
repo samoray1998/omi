@@ -83,10 +83,12 @@ class _DeviceAnimationWidgetState extends State<DeviceAnimationWidget> with Tick
         alignment: Alignment.center,
         children: [
           // Bottom layer: turned-off image (always visible)
-          Image.asset(
-            Assets.images.omiWithoutRopeTurnedOff.path,
-            height: imageHeight,
-            width: imageWidth,
+          ClipOval(
+            child: Image.asset(
+              "assets/images/app_launcher_icon.png",
+              height: imageHeight,
+              width: imageWidth,
+            ),
           ),
           // Top layer: turned-on image (visible only when connected)
           AnimatedOpacity(
@@ -103,10 +105,12 @@ class _DeviceAnimationWidgetState extends State<DeviceAnimationWidget> with Tick
     }
 
     // For all other devices, use the regular single image approach
-    return Image.asset(
-      _getImagePath(),
-      height: imageHeight,
-      width: imageWidth,
+    return ClipOval(
+      child: Image.asset(
+        "assets/images/app_launcher_icon.png",
+        height: imageHeight,
+        width: imageWidth,
+      ),
     );
   }
 

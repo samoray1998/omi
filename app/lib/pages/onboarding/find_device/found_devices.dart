@@ -5,6 +5,7 @@ import 'package:omi/backend/schema/bt_device/bt_device.dart';
 import 'package:omi/providers/device_provider.dart';
 import 'package:omi/providers/onboarding_provider.dart';
 import 'package:omi/gen/assets.gen.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:provider/provider.dart';
 
 class FoundDevices extends StatefulWidget {
@@ -36,7 +37,7 @@ class _FoundDevicesState extends State<FoundDevices> {
     if (deviceName.contains('Glass')) {
       return Assets.images.omiGlass.path;
     }
-    if (deviceName.contains('Taya DevKit')) {
+    if (deviceName.contains('Omi DevKit')) {
       return Assets.images.omiDevkitWithoutRope.path;
     }
     return Assets.images.omiWithoutRope.path;
@@ -77,18 +78,18 @@ class _FoundDevicesState extends State<FoundDevices> {
                     provider.deviceList.isEmpty
                         ? 'Searching for devices...'
                         : '${provider.deviceList.length} ${provider.deviceList.length == 1 ? "DEVICE" : "DEVICES"} FOUND NEARBY',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 14,
-                      color: Color(0x66FFFFFF),
+                      color: TayaColors.secondaryTextColor,
                     ),
                   )
-                : const Text(
+                : Text(
                     'PAIRING SUCCESSFUL',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 12,
-                      color: Color(0x66FFFFFF),
+                      color: TayaColors.secondaryTextColor,
                     ),
                   ),
             if (provider.deviceList.isNotEmpty) const SizedBox(height: 16),

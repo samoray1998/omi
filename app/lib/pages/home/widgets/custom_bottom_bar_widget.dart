@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:omi/pages/chat/page.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
@@ -72,19 +73,19 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildNavItem(
-                          icon: Icons.auto_awesome,
+                          icon: "assets/images/Sparkles.svg",
                           label: 'Moments',
                           index: 0,
                           isSelected: widget.selectedIndex == 0,
                         ),
                         _buildNavItem(
-                          icon: FontAwesomeIcons.featherPointed,
+                          icon: "assets/images/Feather.svg",
                           label: 'Journal',
                           index: 1,
                           isSelected: widget.selectedIndex == 1,
                         ),
                         _buildNavItem(
-                          icon: FontAwesomeIcons.clockRotateLeft,
+                          icon: "assets/images/ClockClockwise.svg",
                           label: 'Memories',
                           index: 2,
                           isSelected: widget.selectedIndex == 2,
@@ -104,7 +105,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   }
 
   Widget _buildNavItem({
-    required IconData icon,
+    required String icon,
     required String label,
     required int index,
     required bool isSelected,
@@ -120,11 +121,16 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            SvgPicture.asset(
               icon,
               color: isSelected ? TayaColors.primaryTextColor : TayaColors.secondaryTextColor,
-              size: 20,
+              semanticsLabel: 'Red dash paths',
             ),
+            // Icon(
+            //   icon,
+            //   color: isSelected ? TayaColors.primaryTextColor : TayaColors.secondaryTextColor,
+            //   size: 20,
+            // ),
             const SizedBox(height: 2),
             Text(
               label,
@@ -159,11 +165,21 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           color: Color.fromRGBO(70, 175, 193, 1),
           shape: BoxShape.circle,
         ),
-        child: const Icon(
-          FontAwesomeIcons.comments,
-          color: Colors.white,
-          size: 25,
+        child: Container(
+          padding: const EdgeInsets.all(15),
+          height: 20,
+          width: 20,
+          child: SvgPicture.asset(
+            "assets/images/MsgBubbles.svg",
+            color: Colors.white,
+            semanticsLabel: 'Red dash paths',
+          ),
         ),
+        //child: const Icon(
+        //   FontAwesomeIcons.comments,
+        //   color: Colors.white,
+        //   size: 25,
+        // ),
       ),
     );
   }

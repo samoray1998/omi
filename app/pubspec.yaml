@@ -112,7 +112,7 @@ dependencies:
   image_picker: ^1.1.2
   timeago: ^3.7.0
   app_links: ^6.3.2
-  flutter_svg: ^2.0.16
+  flutter_svg: ^2.2.1
   file_picker: 8.3.2
   photo_view: ^0.15.0
   font_awesome_flutter: ^10.8.0
