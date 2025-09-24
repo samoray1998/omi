@@ -463,7 +463,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                                 alignment: Alignment.bottomCenter,
                                 child: CustomBottomNavBar(
                                   selectedIndex: home.selectedIndex,
-                                  onItemTapped: (val) => home.setIndex(val),
+                                  onItemTapped: (val) {
+                                    if (val == 3) {
+                                      MixpanelManager().bottomNavigationTabClicked('Chat');
+                                      // Navigate to chat page
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const ChatPage(isPivotBottom: false),
+                                        ),
+                                      );
+                                    } else {
+                                      home.setIndex(val);
+                                    }
+                                  },
                                 ));
 
                             // return Stack(
