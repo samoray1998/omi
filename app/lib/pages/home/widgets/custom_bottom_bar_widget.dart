@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:omi/pages/chat/page.dart';
+import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/styles.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -140,7 +142,16 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   Widget _buildProfileAvatar() {
     return GestureDetector(
-      onTap: () => widget.onItemTapped(3), // Profile index
+      onTap: () {
+        MixpanelManager().bottomNavigationTabClicked('Chat');
+        // Navigate to chat page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ChatPage(isPivotBottom: false),
+          ),
+        );
+      }, // Profile index
       child: Container(
         width: 60,
         height: 60,

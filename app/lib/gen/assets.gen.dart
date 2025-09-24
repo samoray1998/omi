@@ -278,6 +278,13 @@ class $AssetsImagesGen {
   /// File path: assets/images/stripe_logo.svg
   String get stripeLogo => 'assets/images/stripe_logo.svg';
 
+  /// File path: assets/images/taya-bg.png
+  AssetGenImage get tayaBg => const AssetGenImage('assets/images/taya-bg.png');
+
+  /// File path: assets/images/taya-logo.png
+  AssetGenImage get tayaLogo =>
+      const AssetGenImage('assets/images/taya-logo.png');
+
   /// File path: assets/images/telegram_logo.png
   AssetGenImage get telegramLogo =>
       const AssetGenImage('assets/images/telegram_logo.png');
@@ -357,6 +364,8 @@ class $AssetsImagesGen {
     splashIcon,
     stars,
     stripeLogo,
+    tayaBg,
+    tayaLogo,
     telegramLogo,
     whatsappLogo,
     xLogo,

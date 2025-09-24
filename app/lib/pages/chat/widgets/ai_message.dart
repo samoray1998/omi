@@ -349,7 +349,7 @@ class NormalMessageWidget extends StatelessWidget {
             : Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1f1f25),
+                  color: Colors.white,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(4.0),
                     topRight: Radius.circular(16.0),
