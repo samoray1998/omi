@@ -166,7 +166,7 @@ class _ConversationsPageState extends State<ConversationsPage> with AutomaticKee
                 child: ConverstationsWidget(),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 0)),
-              // const SliverToBoxAdapter(child: SearchWidget()), //below search widget
+              //  const SliverToBoxAdapter(child: SearchWidget()), //below search widget
               const SliverToBoxAdapter(child: SearchResultHeaderWidget()),
               getProcessingConversationsWidget(convoProvider.processingConversations),
               if (convoProvider.groupedConversations.isEmpty && !convoProvider.isLoadingConversations)
