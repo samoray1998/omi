@@ -94,12 +94,14 @@ class _DeviceAnimationWidgetState extends State<DeviceAnimationWidget> with Tick
           AnimatedOpacity(
             opacity: widget.isConnected ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
-            child: Image.asset(
-              Assets.images.omiWithoutRope.path,
-              height: imageHeight,
-              width: imageWidth,
+            child: ClipOval(
+              child: Image.asset(
+                "assets/images/app_launcher_icon.png",
+                height: imageHeight,
+                width: imageWidth,
+              ),
             ),
-          ),
+          )
         ],
       );
     }

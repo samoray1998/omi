@@ -71,6 +71,8 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
       setState(() {});
     });
 
+    textController.clear();
+
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
         if (!isScrollingDown) {
@@ -138,159 +140,87 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
               },
               child: Container(
                 color: Colors.white,
-                child: Column(
+                child: Stack(
                   children: [
-                    // Messages area - takes up remaining space
-                    Expanded(
-                      child: provider.isLoadingMessages && !provider.hasCachedMessages
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  provider.firstTimeLoadingText,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            )
-                          : provider.isClearingChat
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      "Deleting your messages from Taya's memory...",
-                                      style: TextStyle(color: TayaColors.secondaryTextColor),
-                                    ),
-                                  ],
-                                )
-                              : (provider.messages.isEmpty)
-                                  ? Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 32.0),
-                                        child: Text(
-                                            connectivityProvider.isConnected
-                                                ? 'No messages yet!\nWhy don\'t you start a conversation?'
-                                                : 'Please check your internet connection and try again',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(color: TayaColors.secondaryTextColor)),
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          // Messages area - takes up remaining space
+                          Expanded(
+                            child: provider.isLoadingMessages && !provider.hasCachedMessages
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                       ),
-                                    )
-                                  : ListView.builder(
-                                      shrinkWrap: false,
-                                      reverse: true,
-                                      controller: scrollController,
-                                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                                      itemCount: provider.messages.length,
-                                      itemBuilder: (context, chatIndex) {
-                                        final message = provider.messages[chatIndex];
-                                        double topPadding = chatIndex == provider.messages.length - 1 ? 8 : 16;
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        provider.firstTimeLoadingText,
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  )
+                                : provider.isClearingChat
+                                    ? Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            "Deleting your messages from Taya's memory...",
+                                            style: TextStyle(color: TayaColors.secondaryTextColor),
+                                          ),
+                                        ],
+                                      )
+                                    : (provider.messages.isEmpty)
+                                        ? Center(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(bottom: 32.0),
+                                              child: Text(
+                                                  connectivityProvider.isConnected
+                                                      ? 'No messages yet!\nWhy don\'t you start a conversation?'
+                                                      : 'Please check your internet connection and try again',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(color: TayaColors.secondaryTextColor)),
+                                            ),
+                                          )
+                                        : ListView.builder(
+                                            shrinkWrap: false,
+                                            reverse: true,
+                                            controller: scrollController,
+                                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                                            itemCount: provider.messages.length,
+                                            itemBuilder: (context, chatIndex) {
+                                              final message = provider.messages[chatIndex];
+                                              double topPadding = chatIndex == provider.messages.length - 1 ? 8 : 16;
 
-                                        double bottomPadding = chatIndex == 0 ? 16 : 0;
-                                        return GestureDetector(
-                                          onLongPress: () {
-                                            showModalBottomSheet(
-                                              context: context,
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20),
-                                                ),
-                                              ),
-                                              builder: (context) => MessageActionMenu(
-                                                message: message.text.decodeString,
-                                                onCopy: () async {
-                                                  MixpanelManager().track('Chat Message Copied',
-                                                      properties: {'message': message.text});
-                                                  await Clipboard.setData(
-                                                      ClipboardData(text: message.text.decodeString));
-                                                  if (context.mounted) {
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text(
-                                                          'Message copied to clipboard.',
-                                                          style: TextStyle(
-                                                            color: Color.fromARGB(255, 255, 255, 255),
-                                                            fontSize: 12.0,
-                                                          ),
-                                                        ),
-                                                        duration: Duration(milliseconds: 2000),
-                                                      ),
-                                                    );
-                                                    Navigator.pop(context);
-                                                  }
-                                                },
-                                                onSelectText: () {
-                                                  MixpanelManager().track('Chat Message Text Selected',
-                                                      properties: {'message': message.text});
-                                                  routeToPage(context, SelectTextScreen(message: message));
-                                                },
-                                                onShare: () {
-                                                  MixpanelManager().track('Chat Message Shared',
-                                                      properties: {'message': message.text});
-                                                  Share.share(
-                                                    '${message.text.decodeString}\n\nResponse from Taya. Get yours at https://omi.me',
-                                                    subject: 'Chat with Taya',
-                                                  );
-                                                  Navigator.pop(context);
-                                                },
-                                                onThumbsUp: message.sender == MessageSender.ai && message.askForNps
-                                                    ? () {
-                                                        provider.setMessageNps(message, 1);
-                                                        Navigator.pop(context);
-                                                        AppSnackbar.showSnackbar('Thank you for your feedback!');
-                                                      }
-                                                    : null,
-                                                onThumbsDown: message.sender == MessageSender.ai && message.askForNps
-                                                    ? () {
-                                                        provider.setMessageNps(message, 0);
-                                                        Navigator.pop(context);
-                                                        AppSnackbar.showSnackbar('Thank you for your feedback!');
-                                                      }
-                                                    : null,
-                                                onReport: () {
-                                                  if (message.sender == MessageSender.human) {
-                                                    Navigator.pop(context);
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text(
-                                                          'You cannot report your own messages.',
-                                                          style: TextStyle(
-                                                            color: Color.fromARGB(255, 255, 255, 255),
-                                                            fontSize: 12.0,
-                                                          ),
-                                                        ),
-                                                        duration: Duration(milliseconds: 2000),
-                                                      ),
-                                                    );
-                                                    return;
-                                                  }
-                                                  showDialog(
+                                              double bottomPadding = chatIndex == 0 ? 16 : 0;
+                                              return GestureDetector(
+                                                onLongPress: () {
+                                                  showModalBottomSheet(
                                                     context: context,
-                                                    builder: (context) {
-                                                      return getDialog(
-                                                        context,
-                                                        () {
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                        () {
-                                                          MixpanelManager().track('Chat Message Reported',
-                                                              properties: {'message': message.text});
-                                                          Navigator.of(context).pop();
-                                                          Navigator.of(context).pop();
-                                                          context
-                                                              .read<MessageProvider>()
-                                                              .removeLocalMessage(message.id);
-                                                          reportMessageServer(message.id);
+                                                    shape: const RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.vertical(
+                                                        top: Radius.circular(20),
+                                                      ),
+                                                    ),
+                                                    builder: (context) => MessageActionMenu(
+                                                      message: message.text.decodeString,
+                                                      onCopy: () async {
+                                                        MixpanelManager().track('Chat Message Copied',
+                                                            properties: {'message': message.text});
+                                                        await Clipboard.setData(
+                                                            ClipboardData(text: message.text.decodeString));
+                                                        if (context.mounted) {
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             const SnackBar(
                                                               content: Text(
-                                                                'Message reported successfully.',
+                                                                'Message copied to clipboard.',
                                                                 style: TextStyle(
                                                                   color: Color.fromARGB(255, 255, 255, 255),
                                                                   fontSize: 12.0,
@@ -299,345 +229,541 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
                                                               duration: Duration(milliseconds: 2000),
                                                             ),
                                                           );
-                                                        },
-                                                        'Report Message',
-                                                        'Are you sure you want to report this message?',
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                          child: Padding(
-                                            key: ValueKey(message.id),
-                                            padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding),
-                                            child: message.sender == MessageSender.ai
-                                                ? AIMessage(
-                                                    showTypingIndicator: provider.showTypingIndicator && chatIndex == 0,
-                                                    message: message,
-                                                    sendMessage: _sendMessageUtil,
-                                                    displayOptions: provider.messages.length <= 1 &&
-                                                        provider.messageSenderApp(message.appId)?.isNotPersona() ==
-                                                            true,
-                                                    appSender: provider.messageSenderApp(message.appId),
-                                                    updateConversation: (ServerConversation conversation) {
-                                                      context
-                                                          .read<ConversationProvider>()
-                                                          .updateConversation(conversation);
-                                                    },
-                                                    setMessageNps: (int value) {
-                                                      provider.setMessageNps(message, value);
-                                                    },
-                                                  )
-                                                : HumanMessage(message: message),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                    ),
-                    // Send message area - fixed at bottom
-                    Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 155, 155, 155).withOpacity(0.8),
-                        // gradient: LinearGradient(
-                        //   begin: Alignment.topLeft,
-                        //   end: Alignment.bottomRight,
-                        //   colors: [
-                        //     Colors.white.withOpacity(0.8),
-                        //     Colors.white.withOpacity(0.4),
-                        //   ],
-                        // ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(22),
-                          topRight: Radius.circular(22),
-                        ),
-                      ),
-                      child: Consumer<HomeProvider>(builder: (context, home, child) {
-                        bool shouldShowSendButton(MessageProvider p) {
-                          return !p.sendingMessage && !_showVoiceRecorder;
-                        }
-
-                        bool shouldShowVoiceRecorderButton() {
-                          return !_showVoiceRecorder;
-                        }
-
-                        bool shouldShowMenuButton() {
-                          return !_showVoiceRecorder;
-                        }
-
-                        return Column(
-                          children: [
-                            // Selected images display above the send bar
-                            Consumer<MessageProvider>(builder: (context, provider, child) {
-                              if (provider.selectedFiles.isNotEmpty) {
-                                return Container(
-                                  margin: const EdgeInsets.only(top: 16, bottom: 8),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  height: 70,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: provider.selectedFiles.length,
-                                    itemBuilder: (ctx, idx) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(right: 8),
-                                        width: 60,
-                                        height: 60,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[800],
-                                          borderRadius: BorderRadius.circular(16),
-                                          image: provider.selectedFileTypes[idx] == 'image'
-                                              ? DecorationImage(
-                                                  image: FileImage(provider.selectedFiles[idx]),
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : null,
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            // File icon for non-images
-                                            if (provider.selectedFileTypes[idx] != 'image')
-                                              const Center(
-                                                child: Icon(
-                                                  Icons.insert_drive_file,
-                                                  color: Colors.white,
-                                                  size: 24,
-                                                ),
-                                              ),
-                                            // Loading indicator
-                                            if (provider.isFileUploading(provider.selectedFiles[idx].path))
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black.withOpacity(0.5),
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
-                                                child: const Center(
-                                                  child: SizedBox(
-                                                    width: 16,
-                                                    height: 16,
-                                                    child: CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            // Close button
-                                            Positioned(
-                                              top: 4,
-                                              right: 4,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  provider.clearSelectedFile(idx);
-                                                },
-                                                child: Container(
-                                                  width: 16,
-                                                  height: 16,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius.circular(10),
-                                                  ),
-                                                  child: const Icon(
-                                                    FontAwesomeIcons.xmark,
-                                                    size: 10,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            }),
-                            // Send bar
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 0,
-                                right: 16,
-                                top: provider.selectedFiles.isNotEmpty ? 0 : 16,
-                                bottom: widget.isPivotBottom ? 20 : (textFieldFocusNode.hasFocus ? 20 : 40),
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.only(left: 16, right: 8),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          if (shouldShowMenuButton())
-                                            GestureDetector(
-                                              onTap: () {
-                                                // Hide keyboard when attach is clicked
-                                                FocusScope.of(context).unfocus();
-                                                if (provider.selectedFiles.length > 3) {
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text('You can only upload 4 files at a time'),
-                                                      duration: Duration(seconds: 2),
+                                                          Navigator.pop(context);
+                                                        }
+                                                      },
+                                                      onSelectText: () {
+                                                        MixpanelManager().track('Chat Message Text Selected',
+                                                            properties: {'message': message.text});
+                                                        routeToPage(context, SelectTextScreen(message: message));
+                                                      },
+                                                      onShare: () {
+                                                        MixpanelManager().track('Chat Message Shared',
+                                                            properties: {'message': message.text});
+                                                        Share.share(
+                                                          '${message.text.decodeString}\n\nResponse from Taya. Get yours at https://omi.me',
+                                                          subject: 'Chat with Taya',
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onThumbsUp: message.sender == MessageSender.ai &&
+                                                              message.askForNps
+                                                          ? () {
+                                                              provider.setMessageNps(message, 1);
+                                                              Navigator.pop(context);
+                                                              AppSnackbar.showSnackbar('Thank you for your feedback!');
+                                                            }
+                                                          : null,
+                                                      onThumbsDown: message.sender == MessageSender.ai &&
+                                                              message.askForNps
+                                                          ? () {
+                                                              provider.setMessageNps(message, 0);
+                                                              Navigator.pop(context);
+                                                              AppSnackbar.showSnackbar('Thank you for your feedback!');
+                                                            }
+                                                          : null,
+                                                      onReport: () {
+                                                        if (message.sender == MessageSender.human) {
+                                                          Navigator.pop(context);
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
+                                                              content: Text(
+                                                                'You cannot report your own messages.',
+                                                                style: TextStyle(
+                                                                  color: Color.fromARGB(255, 255, 255, 255),
+                                                                  fontSize: 12.0,
+                                                                ),
+                                                              ),
+                                                              duration: Duration(milliseconds: 2000),
+                                                            ),
+                                                          );
+                                                          return;
+                                                        }
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return getDialog(
+                                                              context,
+                                                              () {
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                              () {
+                                                                MixpanelManager().track('Chat Message Reported',
+                                                                    properties: {'message': message.text});
+                                                                Navigator.of(context).pop();
+                                                                Navigator.of(context).pop();
+                                                                context
+                                                                    .read<MessageProvider>()
+                                                                    .removeLocalMessage(message.id);
+                                                                reportMessageServer(message.id);
+                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                  const SnackBar(
+                                                                    content: Text(
+                                                                      'Message reported successfully.',
+                                                                      style: TextStyle(
+                                                                        color: Color.fromARGB(255, 255, 255, 255),
+                                                                        fontSize: 12.0,
+                                                                      ),
+                                                                    ),
+                                                                    duration: Duration(milliseconds: 2000),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              'Report Message',
+                                                              'Are you sure you want to report this message?',
+                                                            );
+                                                          },
+                                                        );
+                                                      },
                                                     ),
                                                   );
-                                                  return;
-                                                }
-                                                _showIOSStyleActionSheet(context);
-                                              },
-                                              child: Container(
-                                                margin: const EdgeInsets.only(right: 4),
-                                                height: 44,
-                                                width: 44,
-                                                alignment: Alignment.center,
-                                                child: FaIcon(
-                                                  FontAwesomeIcons.plus,
-                                                  color: provider.selectedFiles.length > 3 ? Colors.grey : Colors.white,
-                                                  size: 20,
+                                                },
+                                                child: Padding(
+                                                  key: ValueKey(message.id),
+                                                  padding: EdgeInsets.only(bottom: bottomPadding, top: topPadding),
+                                                  child: message.sender == MessageSender.ai
+                                                      ? AIMessage(
+                                                          showTypingIndicator:
+                                                              provider.showTypingIndicator && chatIndex == 0,
+                                                          message: message,
+                                                          sendMessage: _sendMessageUtil,
+                                                          displayOptions: provider.messages.length <= 1 &&
+                                                              provider
+                                                                      .messageSenderApp(message.appId)
+                                                                      ?.isNotPersona() ==
+                                                                  true,
+                                                          appSender: provider.messageSenderApp(message.appId),
+                                                          updateConversation: (ServerConversation conversation) {
+                                                            context
+                                                                .read<ConversationProvider>()
+                                                                .updateConversation(conversation);
+                                                          },
+                                                          setMessageNps: (int value) {
+                                                            provider.setMessageNps(message, value);
+                                                          },
+                                                        )
+                                                      : HumanMessage(message: message),
                                                 ),
-                                              ),
-                                            ),
-                                          Expanded(
-                                            child: _showVoiceRecorder
-                                                ? VoiceRecorderWidget(
-                                                    onTranscriptReady: (transcript) {
-                                                      setState(() {
-                                                        textController.text = transcript;
-                                                        _showVoiceRecorder = false;
-                                                        context
-                                                            .read<MessageProvider>()
-                                                            .setNextMessageOriginIsVoice(true);
-                                                      });
-                                                    },
-                                                    onClose: () {
-                                                      setState(() {
-                                                        _showVoiceRecorder = false;
-                                                      });
-                                                    },
-                                                  )
-                                                : Container(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: TextField(
-                                                      enabled: true,
-                                                      controller: textController,
-                                                      focusNode: textFieldFocusNode,
-                                                      obscureText: false,
-                                                      textAlign: TextAlign.start,
-                                                      textAlignVertical: TextAlignVertical.center,
-                                                      decoration: const InputDecoration(
-                                                        hintText: 'Ask Anything',
-                                                        hintStyle: TextStyle(fontSize: 16.0, color: Colors.white54),
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        contentPadding:
-                                                            EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                                                        isDense: true,
-                                                      ),
-                                                      minLines: 1,
-                                                      maxLines: 10,
-                                                      keyboardType: TextInputType.multiline,
-                                                      textCapitalization: TextCapitalization.sentences,
-                                                      style: const TextStyle(
-                                                          fontSize: 16.0, color: Colors.white, height: 1.4),
-                                                    ),
-                                                  ),
+                                              );
+                                            },
                                           ),
-                                          if (shouldShowVoiceRecorderButton())
-                                            textController.text.isNotEmpty
-                                                ? GestureDetector(
-                                                    onTap: () {
-                                                      textController.clear();
-                                                    },
-                                                    child: Container(
-                                                      height: 44,
-                                                      width: 44,
-                                                      alignment: Alignment.center,
-                                                      child: const FaIcon(
-                                                        FontAwesomeIcons.xmark,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : GestureDetector(
-                                                    child: Container(
-                                                      height: 44,
-                                                      width: 44,
-                                                      alignment: Alignment.center,
-                                                      child: const FaIcon(
-                                                        FontAwesomeIcons.microphone,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    ),
-                                                    onTap: () {
-                                                      // Hide keyboard when mic is clicked
-                                                      FocusScope.of(context).unfocus();
-                                                      setState(() {
-                                                        _showVoiceRecorder = true;
-                                                      });
-                                                    },
-                                                  ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  // const SizedBox(width: 8),
-                                  !shouldShowSendButton(provider)
-                                      ? const SizedBox.shrink()
-                                      : ValueListenableBuilder<TextEditingValue>(
-                                          valueListenable: textController,
-                                          builder: (context, value, child) {
-                                            bool canSend = value.text.trim().isNotEmpty &&
-                                                !provider.sendingMessage &&
-                                                !provider.isUploadingFiles &&
-                                                connectivityProvider.isConnected;
-
-                                            return GestureDetector(
-                                              onTap: canSend
-                                                  ? () {
-                                                      HapticFeedback.mediumImpact();
-                                                      String message = textController.text.trim();
-                                                      if (message.isEmpty) return;
-                                                      _sendMessageUtil(message);
-                                                    }
-                                                  : null,
-                                              child: Container(
-                                                height: 44,
-                                                width: 44,
-                                                decoration: BoxDecoration(
-                                                  color: canSend ? Colors.white : Colors.grey,
-                                                  borderRadius: BorderRadius.circular(22),
-                                                  boxShadow: canSend
-                                                      ? [
-                                                          BoxShadow(
-                                                            color: Colors.black.withOpacity(0.1),
-                                                            blurRadius: 8,
-                                                            offset: const Offset(0, 2),
-                                                          ),
-                                                        ]
-                                                      : [],
-                                                ),
-                                                child: Icon(
-                                                  FontAwesomeIcons.arrowUp,
-                                                  color: canSend ? const Color(0xFF35343B) : Colors.white,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                ],
+                          ),
+                          // Send message area - fixed at bottom
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 155, 155, 155).withOpacity(0.8),
+                              // gradient: LinearGradient(
+                              //   begin: Alignment.topLeft,
+                              //   end: Alignment.bottomRight,
+                              //   colors: [
+                              //     Colors.white.withOpacity(0.8),
+                              //     Colors.white.withOpacity(0.4),
+                              //   ],
+                              // ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(22),
+                                topRight: Radius.circular(22),
                               ),
                             ),
-                          ],
-                        );
-                      }),
+                            child: Consumer<HomeProvider>(builder: (context, home, child) {
+                              bool shouldShowSendButton(MessageProvider p) {
+                                return !p.sendingMessage && !_showVoiceRecorder;
+                              }
+
+                              bool shouldShowVoiceRecorderButton() {
+                                return !_showVoiceRecorder;
+                              }
+
+                              bool shouldShowMenuButton() {
+                                return !_showVoiceRecorder;
+                              }
+
+                              return Column(
+                                children: [
+                                  // Selected images display above the send bar
+                                  Consumer<MessageProvider>(builder: (context, provider, child) {
+                                    if (provider.selectedFiles.isNotEmpty) {
+                                      return Container(
+                                        margin: const EdgeInsets.only(top: 16, bottom: 8),
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                        height: 70,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: provider.selectedFiles.length,
+                                          itemBuilder: (ctx, idx) {
+                                            return Container(
+                                              margin: const EdgeInsets.only(right: 8),
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[800],
+                                                borderRadius: BorderRadius.circular(16),
+                                                image: provider.selectedFileTypes[idx] == 'image'
+                                                    ? DecorationImage(
+                                                        image: FileImage(provider.selectedFiles[idx]),
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : null,
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  // File icon for non-images
+                                                  if (provider.selectedFileTypes[idx] != 'image')
+                                                    const Center(
+                                                      child: Icon(
+                                                        Icons.insert_drive_file,
+                                                        color: Colors.white,
+                                                        size: 24,
+                                                      ),
+                                                    ),
+                                                  // Loading indicator
+                                                  if (provider.isFileUploading(provider.selectedFiles[idx].path))
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black.withOpacity(0.5),
+                                                        borderRadius: BorderRadius.circular(16),
+                                                      ),
+                                                      child: const Center(
+                                                        child: SizedBox(
+                                                          width: 16,
+                                                          height: 16,
+                                                          child: CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  // Close button
+                                                  Positioned(
+                                                    top: 4,
+                                                    right: 4,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        provider.clearSelectedFile(idx);
+                                                      },
+                                                      child: Container(
+                                                        width: 16,
+                                                        height: 16,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        child: const Icon(
+                                                          FontAwesomeIcons.xmark,
+                                                          size: 10,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      return const SizedBox.shrink();
+                                    }
+                                  }),
+                                  const SizedBox(
+                                    height: 100,
+                                  )
+
+                                  // Padding(
+                                  //   padding: EdgeInsets.only(
+                                  //     left: 0,
+                                  //     right: 16,
+                                  //     top: provider.selectedFiles.isNotEmpty ? 0 : 16,
+                                  //     bottom: widget.isPivotBottom ? 20 : (textFieldFocusNode.hasFocus ? 20 : 40),
+                                  //   ),
+                                  //   child: Row(
+                                  //     crossAxisAlignment: CrossAxisAlignment.end,
+                                  //     children: [
+                                  //       Expanded(
+                                  //         child: Container(
+                                  //           padding: const EdgeInsets.only(left: 16, right: 8),
+                                  //           child: Row(
+                                  //             crossAxisAlignment: CrossAxisAlignment.end,
+                                  //             children: [
+                                  //               if (shouldShowMenuButton())
+                                  //                 GestureDetector(
+                                  //                   onTap: () {
+                                  //                     // Hide keyboard when attach is clicked
+                                  //                     FocusScope.of(context).unfocus();
+                                  //                     if (provider.selectedFiles.length > 3) {
+                                  //                       ScaffoldMessenger.of(context).showSnackBar(
+                                  //                         const SnackBar(
+                                  //                           content: Text('You can only upload 4 files at a time'),
+                                  //                           duration: Duration(seconds: 2),
+                                  //                         ),
+                                  //                       );
+                                  //                       return;
+                                  //                     }
+                                  //                     _showIOSStyleActionSheet(context);
+                                  //                   },
+                                  //                   child: Container(
+                                  //                     margin: const EdgeInsets.only(right: 4),
+                                  //                     height: 44,
+                                  //                     width: 44,
+                                  //                     alignment: Alignment.center,
+                                  //                     child: FaIcon(
+                                  //                       FontAwesomeIcons.plus,
+                                  //                       color: provider.selectedFiles.length > 3
+                                  //                           ? Colors.grey
+                                  //                           : Colors.white,
+                                  //                       size: 20,
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               Expanded(
+                                  //                 child: _showVoiceRecorder
+                                  //                     ? VoiceRecorderWidget(
+                                  //                         onTranscriptReady: (transcript) {
+                                  //                           setState(() {
+                                  //                             textController.text = transcript;
+                                  //                             _showVoiceRecorder = false;
+                                  //                             context
+                                  //                                 .read<MessageProvider>()
+                                  //                                 .setNextMessageOriginIsVoice(true);
+                                  //                           });
+                                  //                         },
+                                  //                         onClose: () {
+                                  //                           setState(() {
+                                  //                             _showVoiceRecorder = false;
+                                  //                           });
+                                  //                         },
+                                  //                       )
+                                  //                     : Container(
+                                  //                         alignment: Alignment.centerLeft,
+                                  //                         child: TextField(
+                                  //                           enabled: true,
+                                  //                           controller: textController,
+                                  //                           focusNode: textFieldFocusNode,
+                                  //                           obscureText: false,
+                                  //                           textAlign: TextAlign.start,
+                                  //                           textAlignVertical: TextAlignVertical.center,
+                                  //                           decoration: const InputDecoration(
+                                  //                             hintText: 'Ask Anything',
+                                  //                             hintStyle:
+                                  //                                 TextStyle(fontSize: 16.0, color: Colors.white54),
+                                  //                             focusedBorder: InputBorder.none,
+                                  //                             enabledBorder: InputBorder.none,
+                                  //                             contentPadding:
+                                  //                                 EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                                  //                             isDense: true,
+                                  //                           ),
+                                  //                           minLines: 1,
+                                  //                           maxLines: 10,
+                                  //                           keyboardType: TextInputType.multiline,
+                                  //                           textCapitalization: TextCapitalization.sentences,
+                                  //                           style: const TextStyle(
+                                  //                               fontSize: 16.0, color: Colors.white, height: 1.4),
+                                  //                         ),
+                                  //                       ),
+                                  //               ),
+                                  //               if (shouldShowVoiceRecorderButton())
+                                  //                 textController.text.isNotEmpty
+                                  //                     ? GestureDetector(
+                                  //                         onTap: () {
+                                  //                           textController.clear();
+                                  //                         },
+                                  //                         child: Container(
+                                  //                           height: 44,
+                                  //                           width: 44,
+                                  //                           alignment: Alignment.center,
+                                  //                           child: const FaIcon(
+                                  //                             FontAwesomeIcons.xmark,
+                                  //                             color: Colors.white,
+                                  //                             size: 20,
+                                  //                           ),
+                                  //                         ),
+                                  //                       )
+                                  //                     : GestureDetector(
+                                  //                         child: Container(
+                                  //                           height: 44,
+                                  //                           width: 44,
+                                  //                           alignment: Alignment.center,
+                                  //                           child: const FaIcon(
+                                  //                             FontAwesomeIcons.microphone,
+                                  //                             color: Colors.white,
+                                  //                             size: 20,
+                                  //                           ),
+                                  //                         ),
+                                  //                         onTap: () {
+                                  //                           // Hide keyboard when mic is clicked
+                                  //                           FocusScope.of(context).unfocus();
+                                  //                           setState(() {
+                                  //                             _showVoiceRecorder = true;
+                                  //                           });
+                                  //                         },
+                                  //                       ),
+                                  //             ],
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //       // const SizedBox(width: 8),
+                                  //       !shouldShowSendButton(provider)
+                                  //           ? const SizedBox.shrink()
+                                  //           : ValueListenableBuilder<TextEditingValue>(
+                                  //               valueListenable: textController,
+                                  //               builder: (context, value, child) {
+                                  //                 bool canSend = value.text.trim().isNotEmpty &&
+                                  //                     !provider.sendingMessage &&
+                                  //                     !provider.isUploadingFiles &&
+                                  //                     connectivityProvider.isConnected;
+
+                                  //                 return GestureDetector(
+                                  //                   onTap: canSend
+                                  //                       ? () {
+                                  //                           HapticFeedback.mediumImpact();
+                                  //                           String message = textController.text.trim();
+                                  //                           if (message.isEmpty) return;
+                                  //                           _sendMessageUtil(message);
+                                  //                         }
+                                  //                       : null,
+                                  //                   child: Container(
+                                  //                     height: 44,
+                                  //                     width: 44,
+                                  //                     decoration: BoxDecoration(
+                                  //                       color: canSend ? Colors.white : Colors.grey,
+                                  //                       borderRadius: BorderRadius.circular(22),
+                                  //                       boxShadow: canSend
+                                  //                           ? [
+                                  //                               BoxShadow(
+                                  //                                 color: Colors.black.withOpacity(0.1),
+                                  //                                 blurRadius: 8,
+                                  //                                 offset: const Offset(0, 2),
+                                  //                               ),
+                                  //                             ]
+                                  //                           : [],
+                                  //                     ),
+                                  //                     child: Icon(
+                                  //                       FontAwesomeIcons.arrowUp,
+                                  //                       color: canSend ? const Color(0xFF35343B) : Colors.white,
+                                  //                       size: 20,
+                                  //                     ),
+                                  //                   ),
+                                  //                 );
+                                  //               },
+                                  //             ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                ],
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
                     ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SafeArea(
+                        child: Container(
+                            margin: _showVoiceRecorder ? EdgeInsets.all(0) : EdgeInsets.all(10),
+                            constraints: const BoxConstraints(minHeight: 50),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(36),
+                              color: Colors.white.withOpacity(0.7),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsetsDirectional.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(36),
+                                  gradient:
+                                      LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                                    const Color.fromARGB(255, 197, 197, 197).withOpacity(0.5),
+                                    Color.fromARGB(255, 197, 197, 197).withOpacity(0.2),
+                                  ], stops: [
+                                    0.3,
+                                    1
+                                  ])),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _showVoiceRecorder
+                                          ? VoiceRecorderWidget(
+                                              onTranscriptReady: (transcript) {
+                                                setState(() {
+                                                  textController.text = transcript;
+                                                  _showVoiceRecorder = false;
+                                                  context.read<MessageProvider>().setNextMessageOriginIsVoice(true);
+                                                });
+                                              },
+                                              onReady: () {
+                                                setState(() {
+                                                  HapticFeedback.mediumImpact();
+                                                  String message = textController.text.trim();
+                                                  print("transcripting value is ${message}");
+                                                  if (message.isEmpty) return;
+                                                  _sendMessageUtil(message);
+                                                  _showVoiceRecorder = false;
+                                                });
+                                              },
+                                              onClose: () {
+                                                setState(() {
+                                                  _showVoiceRecorder = false;
+                                                });
+                                              },
+                                            )
+                                          : Text(
+                                              "Ask About this Memory",
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  color: TayaColors.secondaryTextColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                    ),
+                                    !_showVoiceRecorder
+                                        ? StreamBuilder(
+                                            stream: textController.text.isEmpty
+                                                ? Stream.empty()
+                                                : Stream.fromIterable([textController.text]),
+                                            builder: (context, snapshot) {
+                                              // bool canSend = snapshot.toString().trim().isNotEmpty == true;
+
+                                              print("this is how it shows ${snapshot.toString().trim().isNotEmpty}");
+                                              connectivityProvider.isConnected;
+                                              return GestureDetector(
+                                                child: Container(
+                                                  height: 44,
+                                                  width: 44,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(100),
+                                                      color: TayaColors.primaryTextColor),
+                                                  alignment: Alignment.center,
+                                                  child: FaIcon(
+                                                    FontAwesomeIcons.microphone,
+                                                    color: TayaColors.secondaryTextColor,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                                onTap: () {
+                                                  setState(() {
+                                                    _showVoiceRecorder = true;
+                                                    print(_showVoiceRecorder);
+                                                  });
+
+                                                  // Hide keyboard when mic is clicked
+                                                  //FocusScope.of(context).unfocus();
+                                                },
+                                              );
+                                            })
+                                        : SizedBox.shrink()
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ),
+                    )
                   ],
                 ),
               )),
@@ -779,10 +905,10 @@ class ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin {
   PreferredSizeWidget _buildAppBar(BuildContext context, MessageProvider provider) {
     return PreferredSize(
       preferredSize: Size.fromHeight(100),
-      child: SafeArea(
-        child: Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: SafeArea(
           child: Row(
             children: [
               IconButton(

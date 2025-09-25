@@ -21,12 +21,9 @@ enum RecordingState {
 class VoiceRecorderWidget extends StatefulWidget {
   final Function(String) onTranscriptReady;
   final VoidCallback onClose;
+  final VoidCallback? onReady;
 
-  const VoiceRecorderWidget({
-    super.key,
-    required this.onTranscriptReady,
-    required this.onClose,
-  });
+  const VoiceRecorderWidget({super.key, required this.onTranscriptReady, required this.onClose, this.onReady});
 
   @override
   State<VoiceRecorderWidget> createState() => _VoiceRecorderWidgetState();
@@ -191,6 +188,9 @@ class _VoiceRecorderWidgetState extends State<VoiceRecorderWidget> with SingleTi
         });
         if (transcript.isNotEmpty) {
           widget.onTranscriptReady(transcript);
+          if (widget.onReady != null) {
+            widget.onReady!();
+          }
         }
       }
     } catch (e) {
