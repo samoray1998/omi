@@ -240,7 +240,7 @@ class _SpeechProfilePageState extends State<SpeechProfilePage> with TickerProvid
                             children: [
                               SizedBox(height: 10),
                               Text(
-                                'Omi needs to learn your voice to be able to recognise you.',
+                                'Taya needs to learn your voice to be able to recognise you.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,

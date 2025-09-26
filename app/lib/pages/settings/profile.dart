@@ -12,6 +12,7 @@ import 'package:omi/pages/speech_profile/page.dart';
 import 'package:omi/providers/home_provider.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/other/temp.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:omi/gen/assets.gen.dart';
@@ -34,8 +35,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildSectionContainer({required List<Widget> children}) {
     return Container(
+      ///TODO: get back here
       decoration: BoxDecoration(
-        color: const Color(0xFF1C1C1E),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -55,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1C1E),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(
@@ -74,8 +76,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: TayaColors.secondaryTextColor,
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
                       ),
@@ -84,8 +86,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: const TextStyle(
-                          color: Color(0xFF8E8E93),
+                        style: TextStyle(
+                          color: TayaColors.secondaryTextColor,
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                         ),
@@ -94,9 +96,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: Color(0xFF3C3C43),
+                color: TayaColors.secondaryTextColor,
                 size: 20,
               ),
             ],
@@ -124,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(
               width: 24,
               height: 24,
-              child: FaIcon(FontAwesomeIcons.chartLine, color: Color(0xFF8E8E93), size: 20),
+              child: FaIcon(FontAwesomeIcons.chartLine, color: TayaColors.secondaryTextColor, size: 20),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -172,20 +174,20 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF000000),
+      backgroundColor: TayaColors.surfaceColor,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Profile',
           style: TextStyle(
-            color: Colors.white,
+            color: TayaColors.secondaryTextColor,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
-        backgroundColor: const Color(0xFF000000),
+        backgroundColor: TayaColors.surfaceColor,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: TayaColors.secondaryTextColor),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -199,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: SharedPreferencesUtil().givenName.isEmpty ? 'Set Your Name' : 'Change Your Name',
                   subtitle: SharedPreferencesUtil().givenName.isEmpty ? 'Not set' : SharedPreferencesUtil().givenName,
-                  icon: const FaIcon(FontAwesomeIcons.solidUser, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.solidUser, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () async {
                     MixpanelManager().pageOpened('Profile Change Name');
                     await showDialog(
@@ -224,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     return _buildProfileItem(
                       title: 'Primary Language',
                       subtitle: languageName,
-                      icon: const FaIcon(FontAwesomeIcons.globe, color: Color(0xFF8E8E93), size: 20),
+                      icon: FaIcon(FontAwesomeIcons.globe, color: TayaColors.secondaryTextColor, size: 20),
                       onTap: () async {
                         MixpanelManager().pageOpened('Profile Change Language');
                         await LanguageSelectionDialog.show(context, isRequired: false, forceShow: true);
@@ -238,7 +240,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: 'Persona',
                   subtitle: 'Manage your Taya persona',
-                  icon: const FaIcon(FontAwesomeIcons.solidCircleUser, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.solidCircleUser, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -261,7 +263,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: 'Speech Profile',
                   subtitle: 'Teach Taya your voice',
-                  icon: const FaIcon(FontAwesomeIcons.microphone, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.microphone, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () {
                     routeToPage(context, const SpeechProfilePage());
                     MixpanelManager().pageOpened('Profile Speech Profile');
@@ -271,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: 'Identifying Others',
                   subtitle: 'Tell Taya who said it 🗣️',
-                  icon: const FaIcon(FontAwesomeIcons.users, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.users, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () {
                     routeToPage(context, const UserPeoplePage());
                   },
@@ -280,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: 'Conversation Timeout',
                   subtitle: 'Set silence duration before auto-end',
-                  icon: const FaIcon(FontAwesomeIcons.clock, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.clock, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () {
                     ConversationTimeoutDialog.show(context);
                   },
@@ -295,7 +297,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: 'Payment Methods',
                   subtitle: 'Add or change your payment method',
-                  icon: const FaIcon(FontAwesomeIcons.solidCreditCard, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.solidCreditCard, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () {
                     routeToPage(context, const PaymentsPage());
                   },
@@ -305,21 +307,21 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 32),
 
             // PREFERENCES SECTION
-            _buildPreferenceToggle(
-              title: 'Help improve Taya by sharing anonymized analytics data',
-              value: SharedPreferencesUtil().optInAnalytics,
-              onChanged: (value) {
-                setState(() {
-                  SharedPreferencesUtil().optInAnalytics = value;
-                  value ? MixpanelManager().optInTracking() : MixpanelManager().optOutTracking();
-                });
-              },
-              onInfoTap: () {
-                routeToPage(context, const PrivacyInfoPage());
-                MixpanelManager().pageOpened('Share Analytics Data Details');
-              },
-            ),
-            const SizedBox(height: 32),
+            // _buildPreferenceToggle(
+            //   title: 'Help improve Taya by sharing anonymized analytics data',
+            //   value: SharedPreferencesUtil().optInAnalytics,
+            //   onChanged: (value) {
+            //     setState(() {
+            //       SharedPreferencesUtil().optInAnalytics = value;
+            //       value ? MixpanelManager().optInTracking() : MixpanelManager().optOutTracking();
+            //     });
+            //   },
+            //   onInfoTap: () {
+            //     routeToPage(context, const PrivacyInfoPage());
+            //     MixpanelManager().pageOpened('Share Analytics Data Details');
+            //   },
+            // ),
+            // const SizedBox(height: 32),
 
             // ACCOUNT SECTION
             _buildSectionContainer(
@@ -327,7 +329,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildProfileItem(
                   title: 'User ID',
                   subtitle: SharedPreferencesUtil().uid,
-                  icon: const FaIcon(FontAwesomeIcons.solidClipboard, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.solidClipboard, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: SharedPreferencesUtil().uid));
                     ScaffoldMessenger.of(context)

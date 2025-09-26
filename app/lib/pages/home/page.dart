@@ -749,23 +749,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                         builder: (context) => const SearchPage(),
                       ),
                     );
-
-                    ///TODO add Logic for search
-                    ///
-
-                    // HapticFeedback.mediumImpact();
-                    // MixpanelManager().pageOpened('Settings');
-                    // String language = SharedPreferencesUtil().userPrimaryLanguage;
-                    // bool hasSpeech = SharedPreferencesUtil().hasSpeakerProfile;
-                    // String transcriptModel = SharedPreferencesUtil().transcriptionModel;
-                    // SettingsDrawer.show(context);
-                    // if (language != SharedPreferencesUtil().userPrimaryLanguage ||
-                    //     hasSpeech != SharedPreferencesUtil().hasSpeakerProfile ||
-                    //     transcriptModel != SharedPreferencesUtil().transcriptionModel) {
-                    //   if (context.mounted) {
-                    //     context.read<CaptureProvider>().onRecordProfileSettingChanged();
-                    //   }
-                    // }
                   },
                 ),
               ),
@@ -844,18 +827,35 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
               //     }
               //   },
               // ),
-              Container(
-                margin: const EdgeInsets.only(left: 10),
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.white),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: ClipOval(
-                  child: Image.network(
-                    "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg",
-                    fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  MixpanelManager().pageOpened('Settings');
+                  String language = SharedPreferencesUtil().userPrimaryLanguage;
+                  bool hasSpeech = SharedPreferencesUtil().hasSpeakerProfile;
+                  String transcriptModel = SharedPreferencesUtil().transcriptionModel;
+                  SettingsDrawer.show(context);
+                  if (language != SharedPreferencesUtil().userPrimaryLanguage ||
+                      hasSpeech != SharedPreferencesUtil().hasSpeakerProfile ||
+                      transcriptModel != SharedPreferencesUtil().transcriptionModel) {
+                    if (context.mounted) {
+                      context.read<CaptureProvider>().onRecordProfileSettingChanged();
+                    }
+                  }
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: ClipOval(
+                    child: Image.network(
+                      "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

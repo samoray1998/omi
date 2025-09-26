@@ -14,6 +14,7 @@ import 'package:omi/pages/settings/usage_page.dart';
 import 'package:omi/providers/usage_provider.dart';
 import 'package:omi/utils/other/temp.dart';
 import 'package:omi/utils/platform/platform_service.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:omi/widgets/dialog.dart';
 import 'package:intercom_flutter/intercom_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -110,7 +111,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1C1E),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(
@@ -126,16 +127,16 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: TayaColors.secondaryTextColor,
                     fontSize: 17,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: Color(0xFF3C3C43),
+                color: TayaColors.secondaryTextColor,
                 size: 20,
               ),
             ],
@@ -148,7 +149,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
   Widget _buildSectionContainer({required List<Widget> children}) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1C1C1E),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -169,8 +170,8 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
       children: [
         Text(
           displayText,
-          style: const TextStyle(
-            color: Color(0xFF8E8E93),
+          style: TextStyle(
+            color: TayaColors.secondaryTextColor,
             fontSize: 13,
             fontWeight: FontWeight.w400,
           ),
@@ -180,10 +181,10 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
           onTap: _copyVersionInfo,
           child: Container(
             padding: const EdgeInsets.all(2),
-            child: const Icon(
+            child: Icon(
               Icons.copy,
               size: 12,
-              color: Color(0xFF8E8E93),
+              color: TayaColors.secondaryTextColor,
             ),
           ),
         ),
@@ -257,42 +258,42 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
             children: [
               _buildSettingsItem(
                 title: 'Profile',
-                icon: const FaIcon(FontAwesomeIcons.solidUser, color: Color(0xFF8E8E93), size: 20),
+                icon: FaIcon(FontAwesomeIcons.solidUser, color: TayaColors.secondaryTextColor, size: 20),
                 onTap: () {
                   Navigator.pop(context);
                   routeToPage(context, const ProfilePage());
                 },
               ),
-              const Divider(height: 1, color: Color(0xFF3C3C43)),
-              _buildSettingsItem(
-                title: showSubscription ? 'Plan & Usage' : 'Usage Insights',
-                icon: const FaIcon(FontAwesomeIcons.chartBar, color: Color(0xFF8E8E93), size: 20),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const UsagePage(),
-                    ),
-                  );
-                },
-              ),
-              const Divider(height: 1, color: Color(0xFF3C3C43)),
-              _buildSettingsItem(
-                title: 'Storage',
-                icon: const FaIcon(FontAwesomeIcons.database, color: Color(0xFF8E8E93), size: 20),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const SyncPage(),
-                    ),
-                  );
-                },
-              ),
+              // const Divider(height: 1, color: Color(0xFF3C3C43)),
+              // _buildSettingsItem(
+              //   title: showSubscription ? 'Plan & Usage' : 'Usage Insights',
+              //   icon: FaIcon(FontAwesomeIcons.chartBar, color: TayaColors.secondaryTextColor, size: 20),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (context) => const UsagePage(),
+              //       ),
+              //     );
+              //   },
+              // ),
+              // const Divider(height: 1, color: Color(0xFF3C3C43)),
+              // _buildSettingsItem(
+              //   title: 'Storage',
+              //   icon: FaIcon(FontAwesomeIcons.database, color: TayaColors.secondaryTextColor, size: 20),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (context) => const SyncPage(),
+              //       ),
+              //     );
+              //   },
+              // ),
               const Divider(height: 1, color: Color(0xFF3C3C43)),
               _buildSettingsItem(
                 title: 'Device Settings',
-                icon: const FaIcon(FontAwesomeIcons.bluetooth, color: Color(0xFF8E8E93), size: 20),
+                icon: FaIcon(FontAwesomeIcons.bluetooth, color: TayaColors.secondaryTextColor, size: 20),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.of(context).push(
@@ -307,38 +308,38 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
           const SizedBox(height: 32),
 
           // Share & Get Section
-          _buildSectionContainer(
-            children: [
-              if (PlatformService.isIOS)
-                _buildSettingsItem(
-                  title: 'Share Taya for iPhone',
-                  icon: const FaIcon(FontAwesomeIcons.solidShareFromSquare, color: Colors.white, size: 20),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    await Share.share('https://apps.apple.com/us/app/omi-ai-scale-yourself/id6502156163');
-                  },
-                ),
-              if (PlatformService.isAndroid)
-                _buildSettingsItem(
-                  title: 'Share Taya for Android',
-                  icon: const FaIcon(FontAwesomeIcons.googlePlay, color: Color(0xFF8E8E93), size: 20),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    await Share.share('https://play.google.com/store/apps/details?id=com.friend.ios');
-                  },
-                ),
-              const Divider(height: 1, color: Color(0xFF3C3C43)),
-              _buildSettingsItem(
-                title: 'Share Omi for Mac',
-                icon: const FaIcon(FontAwesomeIcons.desktop, color: Color(0xFF8E8E93), size: 20),
-                onTap: () async {
-                  Navigator.pop(context);
-                  await Share.share('https://apps.apple.com/us/app/omi-ai-scale-yourself/id6502156163');
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
+          // _buildSectionContainer(
+          //   children: [
+          //     if (PlatformService.isIOS)
+          //       _buildSettingsItem(
+          //         title: 'Share Taya for iPhone',
+          //         icon: FaIcon(FontAwesomeIcons.solidShareFromSquare, color: Colors.white, size: 20),
+          //         onTap: () async {
+          //           Navigator.pop(context);
+          //           await Share.share('https://apps.apple.com/us/app/omi-ai-scale-yourself/id6502156163');
+          //         },
+          //       ),
+          //     if (PlatformService.isAndroid)
+          //       _buildSettingsItem(
+          //         title: 'Share Taya for Android',
+          //         icon: FaIcon(FontAwesomeIcons.googlePlay, color: TayaColors.secondaryTextColor, size: 20),
+          //         onTap: () async {
+          //           Navigator.pop(context);
+          //           await Share.share('https://play.google.com/store/apps/details?id=com.friend.ios');
+          //         },
+          //       ),
+          //     const Divider(height: 1, color: Color(0xFF3C3C43)),
+          //     _buildSettingsItem(
+          //       title: 'Share Omi for Mac',
+          //       icon: FaIcon(FontAwesomeIcons.desktop, color: TayaColors.secondaryTextColor, size: 20),
+          //       onTap: () async {
+          //         Navigator.pop(context);
+          //         await Share.share('https://apps.apple.com/us/app/omi-ai-scale-yourself/id6502156163');
+          //       },
+          //     ),
+          //   ],
+          // ),
+          // const SizedBox(height: 32),
 
           // Support Section
           if (PlatformService.isIntercomSupported)
@@ -346,7 +347,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
               children: [
                 _buildSettingsItem(
                   title: 'Send Feedback',
-                  icon: const FaIcon(FontAwesomeIcons.solidEnvelope, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.solidEnvelope, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () async {
                     Navigator.pop(context);
                     final Uri url = Uri.parse('https://feedback.omi.me/');
@@ -358,7 +359,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                 const Divider(height: 1, color: Color(0xFF3C3C43)),
                 _buildSettingsItem(
                   title: 'Report a bug',
-                  icon: const FaIcon(FontAwesomeIcons.exclamationTriangle, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.exclamationTriangle, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () async {
                     Navigator.pop(context);
                     final Uri url = Uri.parse('https://feedback.omi.me/');
@@ -370,7 +371,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                 const Divider(height: 1, color: Color(0xFF3C3C43)),
                 _buildSettingsItem(
                   title: 'Help Center',
-                  icon: const FaIcon(FontAwesomeIcons.book, color: Color(0xFF8E8E93), size: 20),
+                  icon: FaIcon(FontAwesomeIcons.book, color: TayaColors.secondaryTextColor, size: 20),
                   onTap: () async {
                     Navigator.pop(context);
                     final Uri url = Uri.parse('https://help.omi.me/en/');
@@ -388,7 +389,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
             children: [
               _buildSettingsItem(
                 title: 'Data & Privacy',
-                icon: const FaIcon(FontAwesomeIcons.shield, color: Color(0xFF8E8E93), size: 20),
+                icon: FaIcon(FontAwesomeIcons.shield, color: TayaColors.secondaryTextColor, size: 20),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.of(context).push(
@@ -398,22 +399,22 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                   );
                 },
               ),
+              // const Divider(height: 1, color: Color(0xFF3C3C43)),
+              // _buildSettingsItem(
+              //   title: 'Developer Mode',
+              //   icon: FaIcon(FontAwesomeIcons.code, color: TayaColors.secondaryTextColor, size: 20),
+              //   onTap: () async {
+              //     Navigator.pop(context);
+              //     await routeToPage(context, const DeveloperSettingsPage());
+              //   },
+              // ),
               const Divider(height: 1, color: Color(0xFF3C3C43)),
               _buildSettingsItem(
-                title: 'Developer Mode',
-                icon: const FaIcon(FontAwesomeIcons.code, color: Color(0xFF8E8E93), size: 20),
-                onTap: () async {
-                  Navigator.pop(context);
-                  await routeToPage(context, const DeveloperSettingsPage());
-                },
-              ),
-              const Divider(height: 1, color: Color(0xFF3C3C43)),
-              _buildSettingsItem(
-                title: 'About Omi',
-                icon: const FaIcon(FontAwesomeIcons.infoCircle, color: Color(0xFF8E8E93), size: 20),
+                title: 'About Taya',
+                icon: FaIcon(FontAwesomeIcons.infoCircle, color: TayaColors.secondaryTextColor, size: 20),
                 onTap: () {
-                  Navigator.pop(context);
-                  routeToPage(context, const AboutOmiPage());
+                  // Navigator.pop(context);
+                  // routeToPage(context, const AboutOmiPage());
                 },
               ),
             ],
@@ -425,7 +426,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
             children: [
               _buildSettingsItem(
                 title: 'Sign Out',
-                icon: const FaIcon(FontAwesomeIcons.signOutAlt, color: Color(0xFF8E8E93), size: 20),
+                icon: FaIcon(FontAwesomeIcons.signOutAlt, color: TayaColors.secondaryTextColor, size: 20),
                 onTap: () async {
                   // Capture the provider reference before any navigation
                   final personaProvider = Provider.of<PersonaProvider>(context, listen: false);
@@ -473,7 +474,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
           children: [
             _buildSettingsItem(
               title: 'Need Help? Chat with us',
-              icon: const FaIcon(FontAwesomeIcons.solidComments, color: Color(0xFF8E8E93), size: 20),
+              icon: FaIcon(FontAwesomeIcons.solidComments, color: TayaColors.secondaryTextColor, size: 20),
               onTap: () async {
                 Navigator.pop(context);
                 await Intercom.instance.displayMessenger();
@@ -488,7 +489,7 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
           children: [
             _buildSettingsItem(
               title: 'Sign Out',
-              icon: const FaIcon(FontAwesomeIcons.signOutAlt, color: Color(0xFF8E8E93), size: 20),
+              icon: FaIcon(FontAwesomeIcons.signOutAlt, color: TayaColors.secondaryTextColor, size: 20),
               onTap: () async {
                 // Capture the provider reference before any navigation
                 final personaProvider = Provider.of<PersonaProvider>(context, listen: false);
@@ -534,9 +535,9 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
-      decoration: const BoxDecoration(
-        color: Color(0xFF000000),
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: TayaColors.surfaceColor,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
@@ -560,10 +561,10 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
               children: [
                 // Centered title
                 Center(
-                  child: const Text(
+                  child: Text(
                     'Settings',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: TayaColors.secondaryTextColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -574,10 +575,10 @@ class _SettingsDrawerState extends State<SettingsDrawer> {
                   right: 0,
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Text(
+                    child: Text(
                       'Done',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: TayaColors.secondaryTextColor,
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
                       ),

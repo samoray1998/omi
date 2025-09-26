@@ -362,8 +362,10 @@ Future<(List<ServerConversation>, int, int)> searchConversationsServer(
         jsonEncode({'query': query, 'page': page ?? 1, 'per_page': limit ?? 10, 'include_discarded': includeDiscarded}),
   );
   if (response == null) return (<ServerConversation>[], 0, 0);
+  print("=====>items{{{response:${response.statusCode}}}}");
   if (response.statusCode == 200) {
     List<dynamic> items = (jsonDecode(response.body))['items'];
+    print("=====>items{{{items:${items.length}}}}");
     int currentPage = (jsonDecode(response.body))['current_page'];
     int totalPages = (jsonDecode(response.body))['total_pages'];
     var convos = items.map<ServerConversation>((item) => ServerConversation.fromJson(item)).toList();
