@@ -3,18 +3,21 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:omi/backend/preferences.dart';
 import 'package:omi/backend/schema/conversation.dart';
 import 'package:omi/backend/schema/structured.dart';
 import 'package:omi/pages/conversation_detail/conversation_detail_provider.dart';
 import 'package:omi/pages/conversation_detail/page.dart';
+import 'package:omi/pages/conversations/widgets/persistent_swipe_actions.dart';
 import 'package:omi/pages/settings/usage_page.dart';
 import 'package:omi/providers/connectivity_provider.dart';
 import 'package:omi/providers/conversation_provider.dart';
 import 'package:omi/utils/analytics/mixpanel.dart';
 import 'package:omi/utils/other/temp.dart';
 import 'package:omi/utils/other/time_utils.dart';
+import 'package:omi/utils/styles.dart';
 import 'package:omi/widgets/dialog.dart';
 import 'package:omi/widgets/extensions/string.dart';
 import 'package:provider/provider.dart';
@@ -101,65 +104,207 @@ class _ConversationListItemState extends State<ConversationListItem> {
           child: Container(
             width: double.maxFinite,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: Dismissible(
-                key: UniqueKey(),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20.0),
-                  color: Colors.red,
-                  child: const Icon(Icons.delete, color: Colors.white),
-                ),
-                confirmDismiss: (direction) async {
-                  HapticFeedback.mediumImpact();
-                  bool showDeleteConfirmation = SharedPreferencesUtil().showConversationDeleteConfirmation;
-                  if (!showDeleteConfirmation) return Future.value(true);
-                  final connectivityProvider = Provider.of<ConnectivityProvider>(context, listen: false);
-                  if (connectivityProvider.isConnected) {
-                    return await showDialog(
-                      context: context,
-                      builder: (ctx) => getDialog(
-                        context,
-                        () => Navigator.of(context).pop(false),
-                        () => Navigator.of(context).pop(true),
-                        'Delete Conversation?',
-                        'Are you sure you want to delete this conversation? This action cannot be undone.',
-                        okButtonText: 'Confirm',
+                borderRadius: BorderRadius.circular(16.0),
+                // child: Dismissible(
+                //   key: UniqueKey(),
+                //   direction: DismissDirection.horizontal,
+
+                //   // Background when swiping left (right to left)
+                //   background: Container(
+                //       color: Colors.transparent,
+                //       alignment: Alignment.centerLeft,
+                //       padding: EdgeInsets.symmetric(horizontal: 20),
+                //       child: Row(
+                //         mainAxisSize: MainAxisSize.min,
+                //         children: [
+                //           // fro chat screen
+                //           GestureDetector(
+                //             onTap: () {
+                //               print("this is a test");
+                //             },
+                //             child: Container(
+                //               height: 50,
+                //               width: 50,
+                //               alignment: Alignment.center,
+                //               decoration: BoxDecoration(
+                //                   color: TayaColors.secondaryTextColor, borderRadius: BorderRadius.circular(50)),
+                //               child: SvgPicture.asset(
+                //                 "assets/images/MsgSparkle.svg",
+                //                 height: 20.0,
+                //                 width: 20.0,
+                //                 color: Colors.white,
+                //               ),
+                //             ),
+                //           ),
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+
+                //           /// for editing screen
+                //           Container(
+                //             height: 50,
+                //             width: 50,
+                //             alignment: Alignment.center,
+                //             decoration: BoxDecoration(
+                //                 color: const Color.fromRGBO(7, 107, 139, 1), borderRadius: BorderRadius.circular(50)),
+                //             child: SvgPicture.asset(
+                //               "assets/images/PenSparkle.svg",
+                //               height: 20.0,
+                //               width: 20.0,
+                //               color: Colors.white,
+                //             ),
+                //           ),
+                //           // for share
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+
+                //           Container(
+                //             height: 50,
+                //             width: 50,
+                //             alignment: Alignment.center,
+                //             decoration: BoxDecoration(
+                //                 color: const Color.fromRGBO(82, 185, 202, 1), borderRadius: BorderRadius.circular(50)),
+                //             child: SvgPicture.asset(
+                //               "assets/images/ShareLeft.svg",
+                //               height: 20.0,
+                //               width: 20.0,
+                //               color: Colors.white,
+                //             ),
+                //           )
+                //         ],
+                //       )),
+                //   secondaryBackground: Container(
+                //     alignment: Alignment.centerRight,
+                //     padding: const EdgeInsets.only(right: 20.0),
+                //     //color: TayaColors.surfaceColor,
+                //     color: Colors.transparent,
+                //     child: Container(
+                //       height: 50,
+                //       width: 50,
+                //       alignment: Alignment.center,
+                //       decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(50)),
+                //       child: const FaIcon(FontAwesomeIcons.trashCan, color: Colors.white),
+                //     ),
+                //   ),
+
+                //   confirmDismiss: (direction) async {
+                //     if (direction == DismissDirection.startToEnd) {
+                //       return false;
+                //     } else {
+
+                //     }
+                //   },
+                //   onDismissed: (direction) async {
+                //     if (direction == DismissDirection.endToStart) {
+                //       // Delete action confirmed
+                //       var conversation = widget.conversation;
+                //       var conversationIdx = widget.conversationIdx;
+                //       provider.deleteConversationLocally(conversation, conversationIdx, widget.date);
+                //     }
+                //   },
+                //   child: Container(
+                //     color: Colors.white,
+                //     child: Padding(
+                //       padding: const EdgeInsetsDirectional.all(16),
+                //       child: Column(
+                //         mainAxisSize: MainAxisSize.max,
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           _getConversationHeader(),
+                //           const SizedBox(height: 16),
+                //           _buildConversationBody(context),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+
+                child: PersistentSwipeActions(
+                  //date: date,
+
+                  // Define your action callbacks
+                  onChat: () async {
+                    // TODO: Navigate to chat screen
+                    print("Navigate to chat screen");
+                    await routeToPage(
+                      context,
+                      ConversationDetailPage(
+                        conversation: widget.conversation,
+                        isFromOnboarding: widget.isFromOnboarding,
+                        title: widget.conversation.structured.title,
                       ),
                     );
-                  } else {
-                    return showDialog(
-                      builder: (c) => getDialog(context, () => Navigator.pop(context), () => Navigator.pop(context),
-                          'Unable to Delete Conversation', 'Please check your internet connection and try again.',
-                          singleButton: true, okButtonText: 'OK'),
-                      context: context,
+                  },
+
+                  onEdit: () async {
+                    // TODO: Navigate to edit screen
+                    print("Navigate to edit screen");
+                    await routeToPage(
+                      context,
+                      ConversationDetailPage(
+                        conversation: widget.conversation,
+                        isFromOnboarding: widget.isFromOnboarding,
+                        title: widget.conversation.structured.title,
+                      ),
                     );
-                  }
-                },
-                onDismissed: (direction) async {
-                  var conversation = widget.conversation;
-                  var conversationIdx = widget.conversationIdx;
-                  provider.deleteConversationLocally(conversation, conversationIdx, widget.date);
-                },
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.all(16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _getConversationHeader(),
-                      const SizedBox(height: 16),
-                      _buildConversationBody(context),
-                    ],
+                  },
+
+                  onShare: () {
+                    // TODO: Implement share functionality
+                    print("Share conversation");
+                    // Share.share('Conversation content: ${conversation.content}');
+                  },
+
+                  onDelete: () async {
+                    // TODO: Implement delete with confirmation
+                    print("Delete conversation");
+                    HapticFeedback.mediumImpact();
+                    bool showDeleteConfirmation = SharedPreferencesUtil().showConversationDeleteConfirmation;
+                    if (!showDeleteConfirmation) return Future.value(true);
+                    final connectivityProvider = Provider.of<ConnectivityProvider>(context, listen: false);
+                    if (connectivityProvider.isConnected) {
+                      return await showDialog(
+                        context: context,
+                        builder: (ctx) => getDialog(
+                          context,
+                          () => Navigator.of(context).pop(false),
+                          () => Navigator.of(context).pop(true),
+                          'Delete Conversation?',
+                          'Are you sure you want to delete this conversation? This action cannot be undone.',
+                          okButtonText: 'Confirm',
+                        ),
+                      );
+                    } else {
+                      return showDialog(
+                        builder: (c) => getDialog(context, () => Navigator.pop(context), () => Navigator.pop(context),
+                            'Unable to Delete Conversation', 'Please check your internet connection and try again.',
+                            singleButton: true, okButtonText: 'OK'),
+                        context: context,
+                      );
+                    }
+                  },
+
+                  child: Container(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _getConversationHeader(),
+                          const SizedBox(height: 16),
+                          _buildConversationBody(context),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
+                )),
           ),
         ),
       );

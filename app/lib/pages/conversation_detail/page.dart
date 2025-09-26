@@ -372,7 +372,7 @@ class _ConversationDetailPageState extends State<ConversationDetailPage> with Ti
                       //             HapticFeedback.mediumImpact();
                       //             try {
                       //               // Directly share the summary link
-                      //               bool shared = await setConversationVisibility(provider.conversation.id);
+                                    //bool shared = await setConversationVisibility(provider.conversation.id);
                       //               if (!shared) {
                       //                 ScaffoldMessenger.of(context).showSnackBar(
                       //                   const SnackBar(content: Text('Conversation URL could not be shared.')),
